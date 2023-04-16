@@ -7,7 +7,8 @@ from UI.main import NotepadUI
 with open('probabilty.pkl','rb') as f:
     probs = pickle.load(f)
 
-
+print(len(probs))
+print(probs.get('morocco'))
 def delete_letter(word, verbose=False):
     '''
     Input:
