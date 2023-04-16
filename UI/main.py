@@ -1,6 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
+import Model
 
+
+from Model.edit import Prob_Model
+model = Prob_Model()
+vocab = model.vocab
 
 class NotepadUI:
     def __init__(self, master):
