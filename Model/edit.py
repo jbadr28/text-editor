@@ -3,15 +3,12 @@ from tkinter import *
 import re
 import UI
 
+with open('probs.pkl', 'rb') as f:
+    probs = pickle.load(f)
+with open('vocab.pkl', 'rb') as f:
+    vocab = pickle.load(f)
 
-class Prob_Model:
-    def __int__(self,vocab,probs):
-        with open('probs.pkl', 'rb') as f:
-            pro = pickle.load(f)
-        with open('vocab.pkl', 'rb') as f:
-            voc = pickle.load(f)
-        self.vocab = voc
-        self.probs = pro
+
 
 
 #print(len(probs))

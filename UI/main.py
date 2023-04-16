@@ -1,11 +1,10 @@
+import re
 import tkinter as tk
 from tkinter import messagebox, filedialog
-import Model
+import pickle
+from  Model.edit import *
 
 
-from Model.edit import Prob_Model
-model = Prob_Model()
-vocab = model.vocab
 
 class NotepadUI:
     def __init__(self, master):
@@ -107,7 +106,14 @@ class NotepadUI:
         self.master.bind("<Control-N>", self.new_window)
         self.master.bind("<Control-Key-a>", self.select_all)
         self.master.bind("<Control-Key-A>", self.select_all)
+        self.master.bind("<space>",self.last)
+        self.master.bind("<Return>", self.last)
 
+    # Last word
+    def last(self,e):
+        w= textArea.get(1.0,END).split(" ")[-2]
+        print('last word writen',w,end='\n')
+        detect_miss_spelled(w)
     # Quit 
     def quit(self, e):
         self.master.quit()
