@@ -4,9 +4,10 @@ import re
 import UI
 from UI.main import NotepadUI
 
-with open('probabilty.pkl','rb') as f:
+with open('probs.pkl','rb') as f:
     probs = pickle.load(f)
-
+with open('vocab.pkl','rb') as f:
+    vocab = pickle.load(f)
 #print(len(probs))
 #print(probs.get('morocco'))
 def delete_letter(word, verbose=False):
@@ -105,5 +106,81 @@ def insert_letter(word, verbose=False):
 
     return insert_l
 
+
+def edit_one_letter(word, allow_switches=True):
+    """
+    Input:
+        word: the string/word for which we will generate all possible wordsthat are one edit away.
+    Output:
+        edit_one_set: a set of words with one possible edit. Please return a set. and not a list.
+    """
+
+    edit_one_set = set()
+
+    ### START CODE HERE ###
+    edit_one_set.update(delete_letter(word))
+    if allow_switches:
+        edit_one_set.update(switch_letter(word))
+    edit_one_set.update(replace_letter(word))
+    edit_one_set.update(insert_letter(word))
+    ### END CODE HERE ###
+
+    return edit_one_set
+
+
+def edit_two_letters(word, allow_switches=True):
+    '''
+    Input:
+        word: the input string/word
+    Output:
+        edit_two_set: a set of strings with all possible two edits
+    '''
+
+    edit_two_set = set()
+
+    ### START CODE HERE ###
+    edit_one = edit_one_letter(word, allow_switches=allow_switches)
+    for w in edit_one:
+        if w:
+            edit_two = edit_one_letter(w, allow_switches=allow_switches)
+            edit_two_set.update(edit_two)
+    ### END CODE HERE ###
+
+    return edit_two_set
+
+
+def get_corrections(word, probs, vocab, n=2, verbose=False):
+    '''
+    Input:
+        word: a user entered string to check for suggestions
+        probs: a dictionary that maps each word to its probability in the corpus
+        vocab: a set containing all the vocabulary
+        n: number of possible word corrections you want returned in the dictionary
+    Output:
+        n_best: a list of tuples with the most probable n corrected words and their probabilities.
+    '''
+
+    suggestions = []
+    n_best = []
+
+    ### START CODE HERE ###
+    suggestions = list(
+        (word in vocab and word) or edit_one_letter(word).intersection(vocab) or edit_two_letters(word).intersection(
+            vocab))
+    n_best = [[s, probs[s]] for s in list(reversed(suggestions))]
+    ### END CODE HERE ###
+
+    if verbose: print("suggestions = ", suggestions)
+
+    return n_best
+
+def detect_miss_spelled(text):
+    words = re.findall('\w+',text)
+    for word in words:
+        if word not in vocab :
+            print("miss spelled word is : ",word)
+            tmp_corrections = get_corrections(word, probs, vocab, 2, verbose=True)
+            for i, word_prob in enumerate(tmp_corrections):
+                print(f"word {i}: {word_prob[0]}, probability {word_prob[1]:.6f}")
 
 

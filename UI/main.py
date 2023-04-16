@@ -68,7 +68,7 @@ class NotepadUI:
         # text Area
         global textArea
         textArea = tk.Text(self.master, borderwidth=0, 
-                           font=("typewriter", 14), 
+                           font=("Lucida Console", 12),
                            selectbackground="yellow", 
                            selectforeground="black", 
                            yscrollcommand=scrollbar.set, 
