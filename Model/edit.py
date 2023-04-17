@@ -1,18 +1,12 @@
 import pickle
-from tkinter import *
 import re
-import UI
 
-with open('probs.pkl', 'rb') as f:
+with open( 'Model/probs.pkl', 'rb') as f:
     probs = pickle.load(f)
-with open('vocab.pkl', 'rb') as f:
+with open('Model/vocab.pkl', 'rb') as f:
     vocab = pickle.load(f)
 
 
-
-
-#print(len(probs))
-#print(probs.get('morocco'))
 def delete_letter(word, verbose=False):
     '''
     Input:
@@ -177,13 +171,10 @@ def get_corrections(word, probs, vocab, n=2, verbose=False):
 
     return n_best
 
-def detect_miss_spelled(text):
-    words = re.findall('\w+',text)
-    for word in words:
-        if word not in vocab :
-            print("miss spelled word is : ",word)
-            tmp_corrections = get_corrections(word, probs, vocab, 2, verbose=True)
-            for i, word_prob in enumerate(tmp_corrections):
-                print(f"word {i}: {word_prob[0]}, probability {word_prob[1]:.6f}")
+def detect_miss_spelled(word):
+    print("miss spelled word is : ",word)
+    tmp_corrections = get_corrections(word, probs, vocab, 2, verbose=True)
+    for i, word_prob in enumerate(tmp_corrections):
+        print(f"word {i}: {word_prob[0]}, probability {word_prob[1]:.6f}")
 
 
