@@ -73,7 +73,7 @@ class NotepadUI:
         global textArea
         textArea = tk.Text(self.master, borderwidth=0, 
                            font=("Lucida Console", 12),
-                           selectbackground="yellow", 
+                           selectbackground="skyblue",
                            selectforeground="black", 
                            yscrollcommand=scrollbar.set, 
                            undo=True,
@@ -113,6 +113,12 @@ class NotepadUI:
     def last(self,e):
         w= textArea.get(1.0,END).split(" ")[-2]
         print('last word writen',w,end='\n')
+        pos_start = textArea.search(w, '1.0', END)
+        offset = '+%dc' % len(w)
+        pos_end = pos_start + offset
+        if w not in vocab :
+            textArea.tag_config("underline",underline=True,underlinefg="red")
+            textArea.tag_add("underline",pos_start,pos_end)
         detect_miss_spelled(w)
     # Quit 
     def quit(self, e):
