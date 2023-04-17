@@ -1,7 +1,12 @@
+import pickle
 import re
 import tkinter as tk
 from tkinter import messagebox, filedialog
 from Model.edit import *
+with open( 'Model/probs.pkl', 'rb') as f:
+    probs = pickle.load(f)
+with open('Model/vocab.pkl', 'rb') as f:
+    vocab = pickle.load(f)
 
 
 class NotepadUI:
@@ -203,8 +208,7 @@ class NotepadUI:
                         rcMenu.add_command(label=suggestions[i], command=sugg5)
 
                 rcMenu.add_separator()
-                rcMenu.add_command(
-                    label="Add to dictionary", command= self.add_to_Dictionary(False))
+                rcMenu.add_command(label="Add to dictionary", command= self.add_to_Dictionary(False))
                 rcMenu.add_command(label="Search Google", command="")
                 rcMenu.add_separator()
                 rcMenu.add_command(label="Cut", command=lambda: self.cut(
@@ -216,8 +220,7 @@ class NotepadUI:
                 rcMenu.add_separator()
                 rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
             else:
-                rcMenu.add_command(
-                    label="Add to dictionary", command=self.add_to_Dictionary(False))
+                rcMenu.add_command(label="Add to dictionary", command= "")
                 rcMenu.add_command(label="Search Google", command="")
                 rcMenu.add_separator()
                 rcMenu.add_command(label="Cut", command=lambda: self.cut(
@@ -258,7 +261,6 @@ class NotepadUI:
         col = int(location.split('.')[1])
         row = int(location.split('.')[0])
         letter = textArea.get(str(row) + "." + str(col))
-        print(letter)
         search = True
         while search:
             if letter != " " and col != 0:
@@ -280,20 +282,27 @@ class NotepadUI:
         letter = textArea.get(str(row)+"."+str(col))
         search = True
         while search:
-            if letter != " " :
+            if letter != " " and col!=0:
                 col += 1
                 letter = textArea.get(str(row)+"."+str(col))
             else:
                 search = False
         end = str(row) + "." + str(col)
-        print(start,'  ',end)
         # remove underline
         textArea.tag_config("underline", underline=False)
         textArea.tag_add("underline",start,end)
         # add word to vocabulary
+        print(textArea.get(start,end))
         vocab.add(textArea.get(start,end))
+
         # add word to probabilities
         probs.update({textArea.tag_add("underline",start,end):1/len(probs)})
+        print('word ',textArea.get(start,end),'added to vocab and will not be underlined')
+        with open('Model/vocab.pkl','wb') as f:
+            pickle.dump(vocab,f)
+        with open('Model/probs.pkl', 'wb') as f:
+            pickle.dump(probs, f)
+        self.correct(False)
 
     def last(self, e):
         text = textArea.get(1.0, tk.END)
