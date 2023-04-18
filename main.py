@@ -1,8 +1,17 @@
+import pickle
 import re
 import tkinter as tk
+import webbrowser
 from tkinter import messagebox, filedialog
 from Model.edit import *
 
+
+#with open('Model/probs.pkl', 'rb') as f:
+#    updated_probs = pickle.load(f)
+#    f.close()
+#with open('Model/vocab.pkl', 'rb') as s:
+#    updated_vocab = pickle.load(s)
+#    s.close()
 
 class NotepadUI:
     def __init__(self, master):
@@ -101,7 +110,7 @@ class NotepadUI:
         # Columns and Rows
         global colandline
         colandline = tk.Label(self.master,
-                             borderwidth=0, height=3, bg="#f2fef7", anchor=tk.W, padx=10)
+                              borderwidth=0, height=3, bg="#f2fef7", anchor=tk.W, padx=10)
         colandline.pack(side=tk.LEFT)
 
         # Col & line status bar
@@ -117,9 +126,9 @@ class NotepadUI:
 
         # Right click Menu
         rcMenu = tk.Menu(textArea, tearoff=0, bg="#f2fef7")
-        
+
         # Binding for the right click menu
-        # Call rcMenu 
+        # Call rcMenu
         def call_rcMenu(e):
             rcMenu.delete(0, tk.END)
             call_suggestions_menu()
@@ -128,114 +137,124 @@ class NotepadUI:
         def call_suggestions_menu():
             # START
             location = textArea.index('current')
-            
+
             col = int(location.split('.')[1])
             row = int(location.split('.')[0])
-            letter = textArea.get(str(row)+"."+str(col))
-            # print(letter)
-            search = True
-            while search:
-                if letter != " " and col != 0:
-                    col -= 1
-                    letter = textArea.get(str(row)+"."+str(col))
-                else:
-                    search = False
-            start = str(row)+"."+str(col+1)
-
-            # END
-            location = textArea.index('current')
-             
-            col = int(location.split('.')[1])
-            row = int(location.split('.')[0])
-            letter = textArea.get(str(row)+"."+str(col))
-            search = True
-            while search:
-                if letter != " ":
-                    col += 1
-                    letter = textArea.get(str(row)+"."+str(col))
-                else:
-                    search = False
-            end = str(row)+"."+str(col)
-
-            textArea.tag_add(tk.SEL, start, end)
-            
-            word = textArea.get(start, end)
-
-            if word not in vocab:
-                list_ = get_corrections(word, probs, vocab, 2, verbose=True)
-                labels = list_[:5]
-                sorted_labels = sorted(labels, key = lambda x: x[1], reverse=True)
-                suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
-                # Right click Menu that will contain the words
-                def sugg1():
-                    textArea.replace(start, end, suggestions[0])
+            letter = textArea.get(str(row) + "." + str(col))
+            print("letter"+ letter.strip()+ "fucking")
+            if letter.strip() != "":
                 
-                def sugg2():
-                    textArea.replace(start, end, suggestions[1])
+                search = True
+                while search:
+                    if letter != " " and col != 0:
+                        col -= 1
+                        letter = textArea.get(str(row) + "." + str(col))
+                    else:
+                        search = False
+                if col ==0 :
+                    start = str(row) + "." + str(col )
+                else :
+                    start = str(row) + "." + str(col + 1)
 
-                def sugg3():
-                    textArea.replace(start, end, suggestions[2])
+                # END
+                location = textArea.index('current')
 
-                def sugg4():
-                    textArea.replace(start, end, suggestions[3])
+                col = int(location.split('.')[1])
+                row = int(location.split('.')[0])
+                letter = textArea.get(location)
+                search = True
+                while search:
+                    if letter != " " and col != 0:
+                        col += 1
+                        letter = textArea.get(str(row)+"."+str(col))
+                    else:
+                        search = False
+                end = str(row) + "." + str(col)
 
-                def sugg5():
-                    textArea.replace(start, end, suggestions[4])                
-                        
-                            
-                            
+                textArea.tag_add(tk.SEL, start, end)
 
-                    
-                for i in range(len(suggestions)):
-                    if i == 0:
-                        rcMenu.add_command(label=suggestions[i], command=sugg1)
-                    
-                    if i == 1:
-                        rcMenu.add_command(label=suggestions[i], command=sugg2)
+                word = textArea.get(start, end)
+                with open('Model/vocab.pkl','rb') as f :
+                    updated_vocab = pickle.load(f)
+                    f.close()
+                with open('Model/probs.pkl', 'rb') as f:
+                    updated_probs = pickle.load(f)
+                    f.close()
+                if word not in updated_vocab :
+                    list_ = get_corrections(word)
+                    print('hdachi ll dayr lmachkil ',list_)
+                    if len(list_) != 0 :
+                        labels = list_[:5]
+                        sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
+                        suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
 
-                    if i == 2:
-                        rcMenu.add_command(label=suggestions[i], command=sugg3)
-                    
-                    if i == 3:
-                        rcMenu.add_command(label=suggestions[i], command=sugg4)
+                        # Right click Menu that will contain the words
+                        def sugg1():
+                            textArea.replace(start, end, suggestions[0])
 
-                    if i == 4:
-                        rcMenu.add_command(label=suggestions[i], command=sugg5)
-                        
-                rcMenu.add_separator()
-                rcMenu.add_command(
-                            label="Add to dictionary", command="")
-                rcMenu.add_command(label="Search Google", command="")
-                rcMenu.add_separator()
-                rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                                False), accelerator="Ctrl+X")
-                rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                                False), accelerator="Ctrl+C")
-                rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                                False), accelerator="Ctrl+V")
-                rcMenu.add_separator()
-                rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
+                        def sugg2():
+                            textArea.replace(start, end, suggestions[1])
+
+                        def sugg3():
+                            textArea.replace(start, end, suggestions[2])
+
+                        def sugg4():
+                            textArea.replace(start, end, suggestions[3])
+
+                        def sugg5():
+                            textArea.replace(start, end, suggestions[4])
+
+                        for i in range(len(suggestions)):
+                            if i == 0:
+                                rcMenu.add_command(label=suggestions[i], command=sugg1)
+
+                            if i == 1:
+                                rcMenu.add_command(label=suggestions[i], command=sugg2)
+
+                            if i == 2:
+                                rcMenu.add_command(label=suggestions[i], command=sugg3)
+
+                            if i == 3:
+                                rcMenu.add_command(label=suggestions[i], command=sugg4)
+
+                            if i == 4:
+                                rcMenu.add_command(label=suggestions[i], command=sugg5)
+
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
+                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
+                else:
+                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
             else:
-                rcMenu.add_command(
-                                label="Add to dictionary", command="")
-                rcMenu.add_command(label="Search Google", command="")
-                rcMenu.add_separator()
                 rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                                    False), accelerator="Ctrl+X")
+                        False), accelerator="Ctrl+X")
                 rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                                    False), accelerator="Ctrl+C")
+                        False), accelerator="Ctrl+C")
                 rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                                    False), accelerator="Ctrl+V")
+                        False), accelerator="Ctrl+V")
                 rcMenu.add_separator()
                 rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
 
-                
-                
-
-            
-        
         textArea.bind("<Button-3>", call_rcMenu)
-        
+
         # Edit binding
         self.master.bind("<Control-Key-x>", self.cut)
         self.master.bind("<Control-Key-X>", self.cut)
@@ -256,25 +275,137 @@ class NotepadUI:
         self.master.bind("<space>", self.correct)
         self.master.bind("<Return>", self.correct)
 
+    def searsh(self,e):
+        location = textArea.index('current')
 
-    # Last word
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row) + "." + str(col))
+        search = True
+        while search:
+            if letter != " " and col != 0:
+                col -= 1
+                letter = textArea.get(str(row) + "." + str(col))
+            else:
+                search = False
+        if col == 0:
+            start = str(row) + "." + str(col)
+        else:
+            start = str(row) + "." + str(col + 1)
+
+        # END
+
+        location = textArea.index('current')
+
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row) + "." + str(col))
+        search = True
+        while search:
+            if letter != " " and col != 0:
+                col += 1
+                letter = textArea.get(str(row) + "." + str(col))
+            else:
+                search = False
+        end = str(row) + "." + str(col)
+        # remove underline
+        textArea.tag_config("underline", underline=False)
+        textArea.tag_add("underline", start, end)
+
+        # add word to vocabulary
+        word = textArea.get(start, end)
+        url = 'https://www.google.com/search?q='+word
+        webbrowser.open_new_tab(url)
+
+    def add_to_Dictionary(self, e):
+
+        location = textArea.index('current')
+
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row) + "." + str(col))
+        search = True
+        while search:
+            if letter != " " and col != 0:
+                col -= 1
+                letter = textArea.get(str(row) + "." + str(col))
+            else:
+                search = False
+        if col == 0:
+            start = str(row) + "." + str(col)
+        else:
+            start = str(row) + "." + str(col + 1)
+
+        # END
+
+        location = textArea.index('current')
+
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row)+"."+str(col))
+        search = True
+        while search:
+            if letter != " " and col!=0:
+                col += 1
+                letter = textArea.get(str(row)+"."+str(col))
+            else:
+                search = False
+        end = str(row) + "." + str(col)
+        # remove underline
+        textArea.tag_config("underline", underline=False)
+        textArea.tag_add("underline",start,end)
+        with open('Model/vocab.pkl','rb') as f :
+            vocab = pickle.load(f)
+            f.close()
+        with open('Model/probs.pkl', 'rb') as f:
+            probs = pickle.load(f)
+            f.close()
+        # add word to vocabulary
+        print(textArea.get(start,end))
+        vocab.add(textArea.get(start,end))
+
+        # add word to probabilities
+        probs[str(textArea.tag_add("underline",start,end))]='1e-06'
+        print('word ',textArea.get(start,end),'added to vocab and will not be underlined')
+
+        with open('Model/vocab.pkl','wb') as f:
+            pickle.dump(vocab,f)
+            f.close()
+
+        with open('Model/probs.pkl', 'wb') as s:
+            pickle.dump(probs, s)
+            s.close()
+
+        self.correct(False)
+
     def last(self, e):
         text = textArea.get(1.0, tk.END)
-        w = re.findall('\w+',text)[-1]
-            
+        #w = text.split(" ")[-1]
+        lis = re.findall('\w+', text)
+        print('list ',lis)
+        w = lis[-1]
+
         print(w)
-        return str(w).strip() 
-           
-    # Correct word
+        return str(w).strip()
+
+        # Correct word
+
     def correct(self, e):
         w = self.last(e)
-        pos_start = textArea.search(w, '1.0', tk.END)
-        offset = '+%dc' % len(w)
-        pos_end = pos_start + offset
-        if w not in vocab:
-            textArea.tag_config("underline", underline=True, underlinefg="red")
-            textArea.tag_add("underline", pos_start, pos_end)
-            
+        start_index = '1.0'
+        with open('Model/vocab.pkl','rb') as f :
+            updated_vocab = pickle.load(f)
+        # we loop through the entire textarea to get all occurences of w not only first one
+        while True:
+            pos_start = textArea.search(w, start_index, tk.END)
+            if not pos_start:
+                break
+            pos_end = pos_start + f'+{len(w)}c'
+            if w not in updated_vocab:
+                textArea.tag_config("underline", underline=True, underlinefg="red")
+                textArea.tag_add("underline", pos_start, pos_end)
+            start_index = pos_end
+
 
     # Quit
 
@@ -355,7 +486,6 @@ class NotepadUI:
              "*.py")
         ))
         if filename:
-
             name = filename.split("/")[-1]
             name = name[:name.find(".")]
 
@@ -396,6 +526,7 @@ class NotepadUI:
         textArea.mark_set(tk.INSERT, "1.0")
         textArea.see(tk.INSERT)
         return 'break'
+
     # Cut function
 
     def cut(self, e):
@@ -435,7 +566,8 @@ class NotepadUI:
     # About Message function
     def about(self):
         messagebox.showinfo(
-            title="Welcome User!", message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!")
+            title="Welcome User!",
+            message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!")
 
 
 if __name__ == "__main__":
