@@ -155,10 +155,10 @@ def get_corrections(word,  n=2, verbose=False):
 
     suggestions = []
     n_best = []
-    with open("C:/Users/lenovo/PycharmProjects/AINotePad/Model/vocab.pkl",'rb') as f :
+    with open("Model/vocab.pkl",'rb') as f :
         vocab = pickle.load(f)
         f.close()
-    with open('C:/Users/lenovo/PycharmProjects/AINotePad/Model/probs.pkl','rb') as s :
+    with open('Model/probs.pkl','rb') as s :
         probs = pickle.load(s)
         s.close()
     ### START CODE HERE ###
