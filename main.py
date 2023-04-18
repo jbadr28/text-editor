@@ -181,7 +181,7 @@ class NotepadUI:
                     updated_probs = pickle.load(f)
                     f.close()
                 if word not in updated_vocab :
-                    list_ = get_corrections(word)
+                    list_ = get_corrections(word, updated_probs, updated_vocab)
                     print('hdachi ll dayr lmachkil ',list_)
                     if len(list_) != 0 :
                         labels = list_[:5]
@@ -567,7 +567,7 @@ class NotepadUI:
     def about(self):
         messagebox.showinfo(
             title="Welcome User!",
-            message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!") 
+            message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!")
 
 
 if __name__ == "__main__":
