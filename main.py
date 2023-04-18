@@ -141,105 +141,115 @@ class NotepadUI:
             col = int(location.split('.')[1])
             row = int(location.split('.')[0])
             letter = textArea.get(str(row) + "." + str(col))
-            # print(letter)
-            search = True
-            while search:
-                if letter != " " and col != 0:
-                    col -= 1
-                    letter = textArea.get(str(row) + "." + str(col))
+            print("letter"+ letter.strip()+ "fucking")
+            if letter.strip() != "":
+                
+                search = True
+                while search:
+                    if letter != " " and col != 0:
+                        col -= 1
+                        letter = textArea.get(str(row) + "." + str(col))
+                    else:
+                        search = False
+                if col ==0 :
+                    start = str(row) + "." + str(col )
+                else :
+                    start = str(row) + "." + str(col + 1)
+
+                # END
+                location = textArea.index('current')
+
+                col = int(location.split('.')[1])
+                row = int(location.split('.')[0])
+                letter = textArea.get(location)
+                search = True
+                while search:
+                    if letter != " " and col != 0:
+                        col += 1
+                        letter = textArea.get(str(row)+"."+str(col))
+                    else:
+                        search = False
+                end = str(row) + "." + str(col)
+
+                textArea.tag_add(tk.SEL, start, end)
+
+                word = textArea.get(start, end)
+                with open('Model/vocab.pkl','rb') as f :
+                    updated_vocab = pickle.load(f)
+                    f.close()
+                with open('Model/probs.pkl', 'rb') as f:
+                    updated_probs = pickle.load(f)
+                    f.close()
+                if word not in updated_vocab :
+                    list_ = get_corrections(word, updated_probs, updated_vocab)
+                    print('hdachi ll dayr lmachkil ',list_)
+                    if len(list_) != 0 :
+                        labels = list_[:5]
+                        sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
+                        suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
+
+                        # Right click Menu that will contain the words
+                        def sugg1():
+                            textArea.replace(start, end, suggestions[0])
+
+                        def sugg2():
+                            textArea.replace(start, end, suggestions[1])
+
+                        def sugg3():
+                            textArea.replace(start, end, suggestions[2])
+
+                        def sugg4():
+                            textArea.replace(start, end, suggestions[3])
+
+                        def sugg5():
+                            textArea.replace(start, end, suggestions[4])
+
+                        for i in range(len(suggestions)):
+                            if i == 0:
+                                rcMenu.add_command(label=suggestions[i], command=sugg1)
+
+                            if i == 1:
+                                rcMenu.add_command(label=suggestions[i], command=sugg2)
+
+                            if i == 2:
+                                rcMenu.add_command(label=suggestions[i], command=sugg3)
+
+                            if i == 3:
+                                rcMenu.add_command(label=suggestions[i], command=sugg4)
+
+                            if i == 4:
+                                rcMenu.add_command(label=suggestions[i], command=sugg5)
+
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
+                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
                 else:
-                    search = False
-            if col ==0 :
-                start = str(row) + "." + str(col )
-            else :
-                start = str(row) + "." + str(col + 1)
-
-            # END
-            location = textArea.index('current')
-
-            col = int(location.split('.')[1])
-            row = int(location.split('.')[0])
-            letter = textArea.get(location)
-            search = True
-            while search:
-                if letter != " " and col != 0:
-                    col += 1
-                    letter = textArea.get(str(row)+"."+str(col))
-                else:
-                    search = False
-            end = str(row) + "." + str(col)
-
-            textArea.tag_add(tk.SEL, start, end)
-
-            word = textArea.get(start, end)
-            with open('Model/vocab.pkl','rb') as f :
-                updated_vocab = pickle.load(f)
-                f.close()
-            with open('Model/probs.pkl', 'rb') as f:
-                updated_probs = pickle.load(f)
-                f.close()
-            if word not in updated_vocab :
-                list_ = get_corrections(word)
-                print('hdachi ll dayr lmachkil ',list_)
-                if len(list_) != 0 :
-                    labels = list_[:5]
-                    sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
-                    suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
-
-                    # Right click Menu that will contain the words
-                    def sugg1():
-                        textArea.replace(start, end, suggestions[0])
-
-                    def sugg2():
-                        textArea.replace(start, end, suggestions[1])
-
-                    def sugg3():
-                        textArea.replace(start, end, suggestions[2])
-
-                    def sugg4():
-                        textArea.replace(start, end, suggestions[3])
-
-                    def sugg5():
-                        textArea.replace(start, end, suggestions[4])
-
-                    for i in range(len(suggestions)):
-                        if i == 0:
-                            rcMenu.add_command(label=suggestions[i], command=sugg1)
-
-                        if i == 1:
-                            rcMenu.add_command(label=suggestions[i], command=sugg2)
-
-                        if i == 2:
-                            rcMenu.add_command(label=suggestions[i], command=sugg3)
-
-                        if i == 3:
-                            rcMenu.add_command(label=suggestions[i], command=sugg4)
-
-                        if i == 4:
-                            rcMenu.add_command(label=suggestions[i], command=sugg5)
-
-                rcMenu.add_separator()
-                rcMenu.add_command(label="Add to dictionary", command=self.add_to_Dictionary(False))
-                rcMenu.add_command(label="Search Google", command=self.searsh(False))
-                rcMenu.add_separator()
-                rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                    False), accelerator="Ctrl+X")
-                rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                    False), accelerator="Ctrl+C")
-                rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                    False), accelerator="Ctrl+V")
-                rcMenu.add_separator()
-                rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
+                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
             else:
-                rcMenu.add_command(label="Add to dictionary", command= "")
-                rcMenu.add_command(label="Search Google", command= self.searsh(False))
-                rcMenu.add_separator()
                 rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                    False), accelerator="Ctrl+X")
+                        False), accelerator="Ctrl+X")
                 rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                    False), accelerator="Ctrl+C")
+                        False), accelerator="Ctrl+C")
                 rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                    False), accelerator="Ctrl+V")
+                        False), accelerator="Ctrl+V")
                 rcMenu.add_separator()
                 rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
 
