@@ -567,7 +567,7 @@ class NotepadUI:
     def about(self):
         messagebox.showinfo(
             title="Welcome User!",
-            message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!")
+            message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!") 
 
 
 if __name__ == "__main__":
