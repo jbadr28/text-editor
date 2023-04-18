@@ -1,11 +1,6 @@
 import pickle
 import re
 
-with open( 'Model/probs.pkl', 'rb') as f:
-    probs = pickle.load(f)
-with open('Model/vocab.pkl', 'rb') as f:
-    vocab = pickle.load(f)
-
 
 def delete_letter(word, verbose=False):
     '''
@@ -71,7 +66,8 @@ def replace_letter(word, verbose=False):
         split_l.append((word[0:c], word[c:]))
     replace_l = [a + l + (b[1:] if len(b) > 1 else '') for a, b in split_l if b for l in letters]
     replace_set = set(replace_l)
-    replace_set.remove(word)
+    if word in replace_set :
+        replace_set.remove(word)
     ### END CODE HERE ###
 
     # turn the set back into a list and sort it, for easier viewing
@@ -146,7 +142,7 @@ def edit_two_letters(word, allow_switches=True):
     return edit_two_set
 
 
-def get_corrections(word, probs, vocab, n=2, verbose=False):
+def get_corrections(word,  n=2, verbose=False):
     '''
     Input:
         word: a user entered string to check for suggestions
@@ -159,22 +155,25 @@ def get_corrections(word, probs, vocab, n=2, verbose=False):
 
     suggestions = []
     n_best = []
-
+    with open("C:/Users/lenovo/PycharmProjects/AINotePad/Model/vocab.pkl",'rb') as f :
+        vocab = pickle.load(f)
+        f.close()
+    with open('C:/Users/lenovo/PycharmProjects/AINotePad/Model/probs.pkl','rb') as s :
+        probs = pickle.load(s)
+        s.close()
     ### START CODE HERE ###
     suggestions = list(
         (word in vocab and word) or edit_one_letter(word).intersection(vocab) or edit_two_letters(word).intersection(
             vocab))
-    n_best = [[s, probs[s]] for s in list(reversed(suggestions))]
+    n_best = [[s, probs.get(s)] for s in list(reversed(suggestions))]
     ### END CODE HERE ###
 
     if verbose: print("suggestions = ", suggestions)
 
     return n_best
 
-def detect_miss_spelled(word):
+def detect_miss_spelled(word,probs,vocab):
     print("miss spelled word is : ",word)
     tmp_corrections = get_corrections(word, probs, vocab, 2, verbose=True)
     for i, word_prob in enumerate(tmp_corrections):
         print(f"word {i}: {word_prob[0]}, probability {word_prob[1]:.6f}")
-
-

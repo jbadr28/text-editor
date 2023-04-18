@@ -1,13 +1,17 @@
 import pickle
 import re
 import tkinter as tk
+import webbrowser
 from tkinter import messagebox, filedialog
 from Model.edit import *
-with open( 'Model/probs.pkl', 'rb') as f:
-    probs = pickle.load(f)
-with open('Model/vocab.pkl', 'rb') as f:
-    vocab = pickle.load(f)
 
+
+#with open('Model/probs.pkl', 'rb') as f:
+#    updated_probs = pickle.load(f)
+#    f.close()
+#with open('Model/vocab.pkl', 'rb') as s:
+#    updated_vocab = pickle.load(s)
+#    s.close()
 
 class NotepadUI:
     def __init__(self, master):
@@ -160,7 +164,7 @@ class NotepadUI:
             while search:
                 if letter != " " and col != 0:
                     col += 1
-                    letter = textArea.get(str(row) + "." + str(col))
+                    letter = textArea.get(str(row)+"."+str(col))
                 else:
                     search = False
             end = str(row) + "." + str(col)
@@ -168,48 +172,55 @@ class NotepadUI:
             textArea.tag_add(tk.SEL, start, end)
 
             word = textArea.get(start, end)
+            with open('Model/vocab.pkl','rb') as f :
+                updated_vocab = pickle.load(f)
+                f.close()
+            with open('Model/probs.pkl', 'rb') as f:
+                updated_probs = pickle.load(f)
+                f.close()
+            if word not in updated_vocab :
+                list_ = get_corrections(word)
+                print('hdachi ll dayr lmachkil ',list_)
+                if len(list_) != 0 :
+                    labels = list_[:5]
+                    sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
+                    suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
 
-            if word not in vocab:
-                list_ = get_corrections(word, probs, vocab, 2, verbose=True)
-                labels = list_[:5]
-                sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
-                suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
+                    # Right click Menu that will contain the words
+                    def sugg1():
+                        textArea.replace(start, end, suggestions[0])
 
-                # Right click Menu that will contain the words
-                def sugg1():
-                    textArea.replace(start, end, suggestions[0])
+                    def sugg2():
+                        textArea.replace(start, end, suggestions[1])
 
-                def sugg2():
-                    textArea.replace(start, end, suggestions[1])
+                    def sugg3():
+                        textArea.replace(start, end, suggestions[2])
 
-                def sugg3():
-                    textArea.replace(start, end, suggestions[2])
+                    def sugg4():
+                        textArea.replace(start, end, suggestions[3])
 
-                def sugg4():
-                    textArea.replace(start, end, suggestions[3])
+                    def sugg5():
+                        textArea.replace(start, end, suggestions[4])
 
-                def sugg5():
-                    textArea.replace(start, end, suggestions[4])
+                    for i in range(len(suggestions)):
+                        if i == 0:
+                            rcMenu.add_command(label=suggestions[i], command=sugg1)
 
-                for i in range(len(suggestions)):
-                    if i == 0:
-                        rcMenu.add_command(label=suggestions[i], command=sugg1)
+                        if i == 1:
+                            rcMenu.add_command(label=suggestions[i], command=sugg2)
 
-                    if i == 1:
-                        rcMenu.add_command(label=suggestions[i], command=sugg2)
+                        if i == 2:
+                            rcMenu.add_command(label=suggestions[i], command=sugg3)
 
-                    if i == 2:
-                        rcMenu.add_command(label=suggestions[i], command=sugg3)
+                        if i == 3:
+                            rcMenu.add_command(label=suggestions[i], command=sugg4)
 
-                    if i == 3:
-                        rcMenu.add_command(label=suggestions[i], command=sugg4)
-
-                    if i == 4:
-                        rcMenu.add_command(label=suggestions[i], command=sugg5)
+                        if i == 4:
+                            rcMenu.add_command(label=suggestions[i], command=sugg5)
 
                 rcMenu.add_separator()
-                rcMenu.add_command(label="Add to dictionary", command= self.add_to_Dictionary(False))
-                rcMenu.add_command(label="Search Google", command="")
+                rcMenu.add_command(label="Add to dictionary", command=self.add_to_Dictionary(False))
+                rcMenu.add_command(label="Search Google", command=self.searsh(False))
                 rcMenu.add_separator()
                 rcMenu.add_command(label="Cut", command=lambda: self.cut(
                     False), accelerator="Ctrl+X")
@@ -221,7 +232,7 @@ class NotepadUI:
                 rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
             else:
                 rcMenu.add_command(label="Add to dictionary", command= "")
-                rcMenu.add_command(label="Search Google", command="")
+                rcMenu.add_command(label="Search Google", command= self.searsh(False))
                 rcMenu.add_separator()
                 rcMenu.add_command(label="Cut", command=lambda: self.cut(
                     False), accelerator="Ctrl+X")
@@ -254,8 +265,50 @@ class NotepadUI:
         self.master.bind("<space>", self.correct)
         self.master.bind("<Return>", self.correct)
 
-    # Last word
-    def add_to_Dictionary(self,e):
+    def searsh(self,e):
+        location = textArea.index('current')
+
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row) + "." + str(col))
+        search = True
+        while search:
+            if letter != " " and col != 0:
+                col -= 1
+                letter = textArea.get(str(row) + "." + str(col))
+            else:
+                search = False
+        if col == 0:
+            start = str(row) + "." + str(col)
+        else:
+            start = str(row) + "." + str(col + 1)
+
+        # END
+
+        location = textArea.index('current')
+
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row) + "." + str(col))
+        search = True
+        while search:
+            if letter != " " and col != 0:
+                col += 1
+                letter = textArea.get(str(row) + "." + str(col))
+            else:
+                search = False
+        end = str(row) + "." + str(col)
+        # remove underline
+        textArea.tag_config("underline", underline=False)
+        textArea.tag_add("underline", start, end)
+
+        # add word to vocabulary
+        word = textArea.get(start, end)
+        url = 'https://www.google.com/search?q='+word
+        webbrowser.open_new_tab(url)
+
+    def add_to_Dictionary(self, e):
+
         location = textArea.index('current')
 
         col = int(location.split('.')[1])
@@ -291,17 +344,28 @@ class NotepadUI:
         # remove underline
         textArea.tag_config("underline", underline=False)
         textArea.tag_add("underline",start,end)
+        with open('Model/vocab.pkl','rb') as f :
+            vocab = pickle.load(f)
+            f.close()
+        with open('Model/probs.pkl', 'rb') as f:
+            probs = pickle.load(f)
+            f.close()
         # add word to vocabulary
         print(textArea.get(start,end))
         vocab.add(textArea.get(start,end))
 
         # add word to probabilities
-        probs.update({textArea.tag_add("underline",start,end):1/len(probs)})
+        probs[str(textArea.tag_add("underline",start,end))]='1e-06'
         print('word ',textArea.get(start,end),'added to vocab and will not be underlined')
+
         with open('Model/vocab.pkl','wb') as f:
             pickle.dump(vocab,f)
-        with open('Model/probs.pkl', 'wb') as f:
-            pickle.dump(probs, f)
+            f.close()
+
+        with open('Model/probs.pkl', 'wb') as s:
+            pickle.dump(probs, s)
+            s.close()
+
         self.correct(False)
 
     def last(self, e):
@@ -319,13 +383,15 @@ class NotepadUI:
     def correct(self, e):
         w = self.last(e)
         start_index = '1.0'
+        with open('Model/vocab.pkl','rb') as f :
+            updated_vocab = pickle.load(f)
         # we loop through the entire textarea to get all occurences of w not only first one
         while True:
             pos_start = textArea.search(w, start_index, tk.END)
             if not pos_start:
                 break
             pos_end = pos_start + f'+{len(w)}c'
-            if w not in vocab:
+            if w not in updated_vocab:
                 textArea.tag_config("underline", underline=True, underlinefg="red")
                 textArea.tag_add("underline", pos_start, pos_end)
             start_index = pos_end
