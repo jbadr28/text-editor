@@ -158,7 +158,7 @@ def get_corrections(word, probs, vocab, n=2, verbose=False):
     '''
 
     suggestions = []
-    n_best = []
+    n_best = [] 
 
     ### START CODE HERE ###
     suggestions = list(

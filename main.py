@@ -144,7 +144,7 @@ class NotepadUI:
 
             # END
             location = textArea.index('current')
-            
+             
             col = int(location.split('.')[1])
             row = int(location.split('.')[0])
             letter = textArea.get(str(row)+"."+str(col))
