@@ -6,13 +6,19 @@ from tkinter import messagebox, filedialog
 from Model.edit import *
 
 
+#with open('Model/probs.pkl', 'rb') as f:
+#    updated_probs = pickle.load(f)
+#    f.close()
+#with open('Model/vocab.pkl', 'rb') as s:
+#    updated_vocab = pickle.load(s)
+#    s.close()
+
 class NotepadUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Untitled   - AI Notepad")
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
-        self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
 
         global current_opened_file
         current_opened_file = False
@@ -95,7 +101,7 @@ class NotepadUI:
         # Status bar
         global statusBar
         statusBar = tk.Label(self.master, text="Status",
-                             borderwidth=0, height=1, bg="#f2fef7", anchor=tk.E, padx=10)
+                             borderwidth=0, height=3, bg="#f2fef7", anchor=tk.E, padx=10)
         statusBar.pack(side=tk.RIGHT)
 
         # Cofigure scrollbar
@@ -104,7 +110,7 @@ class NotepadUI:
         # Columns and Rows
         global colandline
         colandline = tk.Label(self.master,
-                              borderwidth=0, height=1, bg="#f2fef7", anchor=tk.W, padx=10)
+                              borderwidth=0, height=3, bg="#f2fef7", anchor=tk.W, padx=10)
         colandline.pack(side=tk.LEFT)
 
         # Col & line status bar
@@ -120,22 +126,6 @@ class NotepadUI:
 
         # Right click Menu
         rcMenu = tk.Menu(textArea, tearoff=0, bg="#f2fef7")
-        def menu_commands(e):
-            if e == 1:    
-                rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
-                rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
-                rcMenu.add_separator()
-            if e == 2:    
-                rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
-                rcMenu.add_separator()
-            rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                        False), accelerator="Ctrl+X")
-            rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                        False), accelerator="Ctrl+C")
-            rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                        False), accelerator="Ctrl+V")
-            rcMenu.add_separator()
-            rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
 
         # Binding for the right click menu
         # Call rcMenu
@@ -145,6 +135,7 @@ class NotepadUI:
             rcMenu.tk_popup(e.x_root, e.y_root)
 
         def call_suggestions_menu():
+            # START
             location = textArea.index('current')
 
             col = int(location.split('.')[1])
@@ -153,7 +144,6 @@ class NotepadUI:
             print("letter"+ letter.strip()+ "fucking")
             if letter.strip() != "":
                 
-                # START
                 search = True
                 while search:
                     if letter != " " and col != 0:
@@ -183,7 +173,7 @@ class NotepadUI:
 
                 textArea.tag_add(tk.SEL, start, end)
 
-                word = textArea.get(start, end).lower()
+                word = textArea.get(start, end)
                 with open('Model/vocab.pkl','rb') as f :
                     updated_vocab = pickle.load(f)
                     f.close()
@@ -193,49 +183,90 @@ class NotepadUI:
                 if word not in updated_vocab :
                     list_ = get_corrections(word, updated_probs, updated_vocab)
                     print('hdachi ll dayr lmachkil ',list_)
-                    if len(list_) != 0:
+                    if len(list_) != 0 :
+                        list_ = [list_[i][0] for i in range(len(list_))]
+
                         labels = list_[:5]
-                        sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
-                        suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
+                        #suggestion_med = map(list_,min_edit_distance())
+                        suggestion_med = [min_edit_distance(word, list_[i]) for i in range(len(list_))]
+                        print('sugg med', suggestion_med)
+                        print('list sugg', list_)
+                        word_med = {}
+                        for i in range(len(list_)):
+                            #word_med.update({tuple(list_[i]): suggestion_med[i]})  # Convert list_[i] to a tuple
+                            word_med.update({"".join(list_[i]): suggestion_med[i]})
+                        sorted_suggestion = dict(sorted(word_med.items(), key=lambda x: x[1]))
+                        print('word_med',word_med)
+                        print('sorted ',sorted_suggestion)
+                        sorted_keys = list(sorted_suggestion.keys())
+                        sorted_values = list(sorted_suggestion.values())
+                        #sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
+                        #suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
 
                         # Right click Menu that will contain the words
                         def sugg1():
-                            textArea.replace(start, end, suggestions[0])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg2():
-                            textArea.replace(start, end, suggestions[1])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg3():
-                            textArea.replace(start, end, suggestions[2])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg4():
-                            textArea.replace(start, end, suggestions[3])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg5():
-                            textArea.replace(start, end, suggestions[4])
+                            textArea.replace(start, end, sorted_keys[i])
 
-                        for i in range(len(suggestions)):
+                        for i in range(len(sorted_suggestion)):
                             if i == 0:
-                                rcMenu.add_command(label=suggestions[i], command=sugg1)
+                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg1)
 
                             if i == 1:
-                                rcMenu.add_command(label=suggestions[i], command=sugg2)
+                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg2)
 
                             if i == 2:
-                                rcMenu.add_command(label=suggestions[i], command=sugg3)
+                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg3)
 
                             if i == 3:
-                                rcMenu.add_command(label=suggestions[i], command=sugg4)
+                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg4)
 
                             if i == 4:
-                                rcMenu.add_command(label=suggestions[i], command=sugg5)
+                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg5)
 
                     rcMenu.add_separator()
-                    menu_commands(1)
+                    rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
+                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
                 else:
-                    menu_commands(2)
+                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+                    rcMenu.add_separator()
+                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
             else:
-                menu_commands(0)
+                rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+                rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+                rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+                rcMenu.add_separator()
+                rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
 
         textArea.bind("<Button-3>", call_rcMenu)
 
@@ -258,11 +289,8 @@ class NotepadUI:
         self.master.bind("<Control-Key-A>", self.select_all)
         self.master.bind("<space>", self.correct)
         self.master.bind("<Return>", self.correct)
-        self.master.bind("<Alt-Key-c>", self.scaner)
-        self.master.bind("<Alt-Key-C>", self.scaner)
 
-
-    def location(self, e):
+    def searsh(self,e):
         location = textArea.index('current')
 
         col = int(location.split('.')[1])
@@ -295,30 +323,61 @@ class NotepadUI:
             else:
                 search = False
         end = str(row) + "." + str(col)
-        return start, end
-    
-    def searsh(self,e):
-        start, end = self.location(e)
         # remove underline
         textArea.tag_config("underline", underline=False)
         textArea.tag_add("underline", start, end)
 
         # add word to vocabulary
-        word = textArea.get(start, end).lower()
+        word = textArea.get(start, end)
         url = 'https://www.google.com/search?q='+word
         webbrowser.open_new_tab(url)
 
     def add_to_Dictionary(self, e):
-        start, end = self.location(e)
-        # remove underline
-        
-        textArea.tag_add("underline",start,end)
-        textArea.tag_config("underline", underline=False)
 
+        location = textArea.index('current')
+
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row) + "." + str(col))
+        search = True
+        while search:
+            if letter != " " and col != 0:
+                col -= 1
+                letter = textArea.get(str(row) + "." + str(col))
+            else:
+                search = False
+        if col == 0:
+            start = str(row) + "." + str(col)
+        else:
+            start = str(row) + "." + str(col + 1)
+
+        # END
+
+        location = textArea.index('current')
+
+        col = int(location.split('.')[1])
+        row = int(location.split('.')[0])
+        letter = textArea.get(str(row)+"."+str(col))
+        search = True
+        while search:
+            if letter != " " and col!=0:
+                col += 1
+                letter = textArea.get(str(row)+"."+str(col))
+            else:
+                search = False
+        end = str(row) + "." + str(col)
+        # remove underline
+        textArea.tag_config("underline", underline=False)
+        textArea.tag_add("underline",start,end)
+        with open('Model/vocab.pkl','rb') as f :
+            vocab = pickle.load(f)
+            f.close()
+        with open('Model/probs.pkl', 'rb') as f:
+            probs = pickle.load(f)
+            f.close()
         # add word to vocabulary
-        word = textArea.get(start,end).lower()
-        print(word)
-        vocab.add(word)
+        print(textArea.get(start,end))
+        vocab.add(textArea.get(start,end))
 
         # add word to probabilities
         probs[str(textArea.tag_add("underline",start,end))]='1e-06'
@@ -335,38 +394,16 @@ class NotepadUI:
         self.correct(False)
 
     def last(self, e):
-        text = textArea.get(1.0, tk.END).strip().lower()
-        print("letter"+text+"fucking")
+        text = textArea.get(1.0, tk.END)
         #w = text.split(" ")[-1]
-        if text != "":
-            lis = re.findall('\w+', text)
-            print('list ',lis)
-            w = lis[-1]
+        lis = re.findall('\w+', text)
+        print('list ',lis)
+        w = lis[-1]
 
-            print(w)
-            return str(w).strip().lower()
+        print(w)
+        return str(w).strip()
 
-    def scaner(self, e):
-        text = textArea.get(1.0, tk.END).strip().lower()
-        if text != "":
-            list_ = re.findall('\w+', text)
-            for w in list_:
-                start_index = '1.0'
-                with open('Model/vocab.pkl','rb') as f :
-                    updated_vocab = pickle.load(f)
-                # we loop through the entire textarea to get all occurences of w not only first one
-                while True:
-                    pos_start = textArea.search(w, start_index, tk.END)
-                    if not pos_start:
-                        break
-                    pos_end = pos_start + f'+{len(w)}c'
-                    if w not in updated_vocab:
-                        textArea.tag_config("underline", underline=True, underlinefg="red")
-                        textArea.tag_add("underline", pos_start, pos_end)
-                    start_index = pos_end
-
-    
-    # Correct word
+        # Correct word
 
     def correct(self, e):
         w = self.last(e)
@@ -388,9 +425,7 @@ class NotepadUI:
     # Quit
 
     def quit(self, e):
-        answer = messagebox.askyesno(title= "Exit",message="Are you sure you want to quit?")
-        if answer:
-            self.master.quit()
+        self.master.quit()
 
     # New file
 
