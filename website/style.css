@@ -1,0 +1,117 @@
+*{
+    padding: 0;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* My Nav CSS Code*/
+#nav-container{
+    background-color: #20B3B0;
+}
+#mynav{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+}
+
+#mynav #logo{
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#mynav #logo h1{
+    font-size: 250%;
+}
+
+#mynav #logo span{
+    color: #993F0C;
+    font-weight: bolder;
+    border: #E67C40 solid 3px;
+    padding: 1%;
+    background-color: white;
+    outline-color: #E67C40;
+    border-radius: 15%;
+}
+
+#mynav #items{
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+#mynav #list {
+    position: relative;
+    color: black;
+    text-decoration: none;
+    font-size: 130%;
+    
+    
+}
+
+#mynav #dw{
+    font-size: 130%;
+    background-color: #993F0C;
+    color: white;
+}
+
+#mynav #list:after {
+    content: '';
+    text-decoration: none;
+    position: absolute;
+    background-color: #993F0C;
+    
+    width: 0%;
+    height: 3px;
+    left: 0;
+    bottom: -10px;
+    transition: width 0.3s ease;
+}
+
+#mynav #list:hover:after {
+    width: 100%;
+}
+
+#mynav #list:hover {
+    color: #993F0C;
+    font-weight: bold;
+}
+@media only screen and (max-width: 1400px) {
+    /* 73% */
+    #mynav #items{
+        padding-left: 11%;
+        padding-right: 11%;
+    }
+
+    #mynav #logo h1{
+        font-size: 182.5%;
+    }
+
+    #mynav #list {
+        font-size: 95%; 
+    }
+    #mynav #dw {
+        font-size: 95%; 
+    }
+
+}
+
+@media only screen and (max-width: 1280px) {
+    /* 66% */
+    #mynav #items{
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+
+    #mynav #logo h1{
+        font-size: 165%;
+    }
+
+    #mynav #list {
+        font-size: 86%; 
+    }
+    #mynav #dw {
+        font-size: 86%; 
+    }
+
+}
