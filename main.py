@@ -311,8 +311,9 @@ class NotepadUI:
     def add_to_Dictionary(self, e):
         start, end = self.location(e)
         # remove underline
-        textArea.tag_config("underline", underline=False)
+        
         textArea.tag_add("underline",start,end)
+        textArea.tag_config("underline", underline=False)
 
         # add word to vocabulary
         word = textArea.get(start,end).lower()
