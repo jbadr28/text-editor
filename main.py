@@ -124,6 +124,9 @@ class NotepadUI:
                 rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
                 rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
                 rcMenu.add_separator()
+            if e == 2:    
+                rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                rcMenu.add_separator()
             rcMenu.add_command(label="Cut", command=lambda: self.cut(
                         False), accelerator="Ctrl+X")
             rcMenu.add_command(label="Copy", command=lambda: self.copy(
@@ -141,7 +144,6 @@ class NotepadUI:
             rcMenu.tk_popup(e.x_root, e.y_root)
 
         def call_suggestions_menu():
-            # START
             location = textArea.index('current')
 
             col = int(location.split('.')[1])
@@ -150,6 +152,7 @@ class NotepadUI:
             print("letter"+ letter.strip()+ "fucking")
             if letter.strip() != "":
                 
+                # START
                 search = True
                 while search:
                     if letter != " " and col != 0:
@@ -229,7 +232,7 @@ class NotepadUI:
                     rcMenu.add_separator()
                     menu_commands(1)
                 else:
-                    menu_commands(1)
+                    menu_commands(2)
             else:
                 menu_commands(0)
 
@@ -255,7 +258,7 @@ class NotepadUI:
         self.master.bind("<space>", self.correct)
         self.master.bind("<Return>", self.correct)
 
-    def searsh(self,e):
+    def location(self, e):
         location = textArea.index('current')
 
         col = int(location.split('.')[1])
@@ -288,6 +291,10 @@ class NotepadUI:
             else:
                 search = False
         end = str(row) + "." + str(col)
+        return start, end
+    
+    def searsh(self,e):
+        start, end = self.location(e)
         # remove underline
         textArea.tag_config("underline", underline=False)
         textArea.tag_add("underline", start, end)
@@ -298,39 +305,7 @@ class NotepadUI:
         webbrowser.open_new_tab(url)
 
     def add_to_Dictionary(self, e):
-
-        location = textArea.index('current')
-
-        col = int(location.split('.')[1])
-        row = int(location.split('.')[0])
-        letter = textArea.get(str(row) + "." + str(col))
-        search = True
-        while search:
-            if letter != " " and col != 0:
-                col -= 1
-                letter = textArea.get(str(row) + "." + str(col))
-            else:
-                search = False
-        if col == 0:
-            start = str(row) + "." + str(col)
-        else:
-            start = str(row) + "." + str(col + 1)
-
-        # END
-
-        location = textArea.index('current')
-
-        col = int(location.split('.')[1])
-        row = int(location.split('.')[0])
-        letter = textArea.get(str(row)+"."+str(col))
-        search = True
-        while search:
-            if letter != " " and col!=0:
-                col += 1
-                letter = textArea.get(str(row)+"."+str(col))
-            else:
-                search = False
-        end = str(row) + "." + str(col)
+        start, end = self.location(e)
         # remove underline
         textArea.tag_config("underline", underline=False)
         textArea.tag_add("underline",start,end)
