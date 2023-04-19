@@ -12,6 +12,7 @@ class NotepadUI:
         self.master.title("Untitled   - AI Notepad")
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
+        self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
 
         global current_opened_file
         current_opened_file = False
@@ -363,7 +364,9 @@ class NotepadUI:
     # Quit
 
     def quit(self, e):
-        self.master.quit()
+        answer = messagebox.askyesno(title= "Exit",message="Are you sure you want to quit?")
+        if answer:
+            self.master.quit()
 
     # New file
 
