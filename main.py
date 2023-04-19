@@ -258,6 +258,9 @@ class NotepadUI:
         self.master.bind("<Control-Key-A>", self.select_all)
         self.master.bind("<space>", self.correct)
         self.master.bind("<Return>", self.correct)
+        self.master.bind("<Alt-Key-c>", self.scaner)
+        self.master.bind("<Alt-Key-C>", self.scaner)
+
 
     def location(self, e):
         location = textArea.index('current')
@@ -331,7 +334,7 @@ class NotepadUI:
         self.correct(False)
 
     def last(self, e):
-        text = textArea.get(1.0, tk.END).strip()
+        text = textArea.get(1.0, tk.END).strip().lower()
         print("letter"+text+"fucking")
         #w = text.split(" ")[-1]
         if text != "":
@@ -342,7 +345,27 @@ class NotepadUI:
             print(w)
             return str(w).strip().lower()
 
-        # Correct word
+    def scaner(self, e):
+        text = textArea.get(1.0, tk.END).strip().lower()
+        if text != "":
+            list_ = re.findall('\w+', text)
+            for w in list_:
+                start_index = '1.0'
+                with open('Model/vocab.pkl','rb') as f :
+                    updated_vocab = pickle.load(f)
+                # we loop through the entire textarea to get all occurences of w not only first one
+                while True:
+                    pos_start = textArea.search(w, start_index, tk.END)
+                    if not pos_start:
+                        break
+                    pos_end = pos_start + f'+{len(w)}c'
+                    if w not in updated_vocab:
+                        textArea.tag_config("underline", underline=True, underlinefg="red")
+                        textArea.tag_add("underline", pos_start, pos_end)
+                    start_index = pos_end
+
+    
+    # Correct word
 
     def correct(self, e):
         w = self.last(e)
