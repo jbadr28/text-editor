@@ -6,13 +6,6 @@ from tkinter import messagebox, filedialog
 from Model.edit import *
 
 
-#with open('Model/probs.pkl', 'rb') as f:
-#    updated_probs = pickle.load(f)
-#    f.close()
-#with open('Model/vocab.pkl', 'rb') as s:
-#    updated_vocab = pickle.load(s)
-#    s.close()
-
 class NotepadUI:
     def __init__(self, master):
         self.master = master
@@ -101,7 +94,7 @@ class NotepadUI:
         # Status bar
         global statusBar
         statusBar = tk.Label(self.master, text="Status",
-                             borderwidth=0, height=3, bg="#f2fef7", anchor=tk.E, padx=10)
+                             borderwidth=0, height=1, bg="#f2fef7", anchor=tk.E, padx=10)
         statusBar.pack(side=tk.RIGHT)
 
         # Cofigure scrollbar
@@ -110,7 +103,7 @@ class NotepadUI:
         # Columns and Rows
         global colandline
         colandline = tk.Label(self.master,
-                              borderwidth=0, height=3, bg="#f2fef7", anchor=tk.W, padx=10)
+                              borderwidth=0, height=1, bg="#f2fef7", anchor=tk.W, padx=10)
         colandline.pack(side=tk.LEFT)
 
         # Col & line status bar
@@ -126,6 +119,19 @@ class NotepadUI:
 
         # Right click Menu
         rcMenu = tk.Menu(textArea, tearoff=0, bg="#f2fef7")
+        def menu_commands(e):
+            if e == 1:    
+                rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
+                rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
+                rcMenu.add_separator()
+            rcMenu.add_command(label="Cut", command=lambda: self.cut(
+                        False), accelerator="Ctrl+X")
+            rcMenu.add_command(label="Copy", command=lambda: self.copy(
+                        False), accelerator="Ctrl+C")
+            rcMenu.add_command(label="Paste", command=lambda: self.paste(
+                        False), accelerator="Ctrl+V")
+            rcMenu.add_separator()
+            rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
 
         # Binding for the right click menu
         # Call rcMenu
@@ -173,7 +179,7 @@ class NotepadUI:
 
                 textArea.tag_add(tk.SEL, start, end)
 
-                word = textArea.get(start, end)
+                word = textArea.get(start, end).lower()
                 with open('Model/vocab.pkl','rb') as f :
                     updated_vocab = pickle.load(f)
                     f.close()
@@ -183,7 +189,7 @@ class NotepadUI:
                 if word not in updated_vocab :
                     list_ = get_corrections(word, updated_probs, updated_vocab)
                     print('hdachi ll dayr lmachkil ',list_)
-                    if len(list_) != 0 :
+                    if len(list_) != 0:
                         labels = list_[:5]
                         sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
                         suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
@@ -221,37 +227,11 @@ class NotepadUI:
                                 rcMenu.add_command(label=suggestions[i], command=sugg5)
 
                     rcMenu.add_separator()
-                    rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
-                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
-                    rcMenu.add_separator()
-                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                        False), accelerator="Ctrl+X")
-                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                        False), accelerator="Ctrl+C")
-                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                        False), accelerator="Ctrl+V")
-                    rcMenu.add_separator()
-                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
+                    menu_commands(1)
                 else:
-                    rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
-                    rcMenu.add_separator()
-                    rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                        False), accelerator="Ctrl+X")
-                    rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                        False), accelerator="Ctrl+C")
-                    rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                        False), accelerator="Ctrl+V")
-                    rcMenu.add_separator()
-                    rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
+                    menu_commands(1)
             else:
-                rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                        False), accelerator="Ctrl+X")
-                rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                        False), accelerator="Ctrl+C")
-                rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                        False), accelerator="Ctrl+V")
-                rcMenu.add_separator()
-                rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
+                menu_commands(0)
 
         textArea.bind("<Button-3>", call_rcMenu)
 
@@ -313,7 +293,7 @@ class NotepadUI:
         textArea.tag_add("underline", start, end)
 
         # add word to vocabulary
-        word = textArea.get(start, end)
+        word = textArea.get(start, end).lower()
         url = 'https://www.google.com/search?q='+word
         webbrowser.open_new_tab(url)
 
@@ -354,15 +334,11 @@ class NotepadUI:
         # remove underline
         textArea.tag_config("underline", underline=False)
         textArea.tag_add("underline",start,end)
-        with open('Model/vocab.pkl','rb') as f :
-            vocab = pickle.load(f)
-            f.close()
-        with open('Model/probs.pkl', 'rb') as f:
-            probs = pickle.load(f)
-            f.close()
+
         # add word to vocabulary
-        print(textArea.get(start,end))
-        vocab.add(textArea.get(start,end))
+        word = textArea.get(start,end).lower()
+        print(word)
+        vocab.add(word)
 
         # add word to probabilities
         probs[str(textArea.tag_add("underline",start,end))]='1e-06'
@@ -379,14 +355,16 @@ class NotepadUI:
         self.correct(False)
 
     def last(self, e):
-        text = textArea.get(1.0, tk.END)
+        text = textArea.get(1.0, tk.END).strip()
+        print("letter"+text+"fucking")
         #w = text.split(" ")[-1]
-        lis = re.findall('\w+', text)
-        print('list ',lis)
-        w = lis[-1]
+        if text != "":
+            lis = re.findall('\w+', text)
+            print('list ',lis)
+            w = lis[-1]
 
-        print(w)
-        return str(w).strip()
+            print(w)
+            return str(w).strip().lower()
 
         # Correct word
 
