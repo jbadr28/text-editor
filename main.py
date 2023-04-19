@@ -128,6 +128,8 @@ class NotepadUI:
             if e == 2:    
                 rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
                 rcMenu.add_separator()
+            rcMenu.add_command(label="Scan for errors", command=lambda: self.scaner(False), accelerator="Alt+C")
+            rcMenu.add_separator()
             rcMenu.add_command(label="Cut", command=lambda: self.cut(
                         False), accelerator="Ctrl+X")
             rcMenu.add_command(label="Copy", command=lambda: self.copy(
@@ -141,10 +143,10 @@ class NotepadUI:
         # Call rcMenu
         def call_rcMenu(e):
             rcMenu.delete(0, tk.END)
-            call_suggestions_menu()
+            call_suggestions_menu(e)
             rcMenu.tk_popup(e.x_root, e.y_root)
 
-        def call_suggestions_menu():
+        def call_suggestions_menu(e):
             location = textArea.index('current')
 
             col = int(location.split('.')[1])
@@ -167,19 +169,8 @@ class NotepadUI:
                     start = str(row) + "." + str(col + 1)
 
                 # END
-                location = textArea.index('current')
-
-                col = int(location.split('.')[1])
-                row = int(location.split('.')[0])
-                letter = textArea.get(location)
-                search = True
-                while search:
-                    if letter != " " and col != 0:
-                        col += 1
-                        letter = textArea.get(str(row)+"."+str(col))
-                    else:
-                        search = False
-                end = str(row) + "." + str(col)
+                word_len = len(textArea.get(start, tk.END).split(" ")[0])
+                end = str(row) + "." + str(col + word_len+1)
 
                 textArea.tag_add(tk.SEL, start, end)
 
@@ -237,7 +228,7 @@ class NotepadUI:
             else:
                 menu_commands(0)
 
-        textArea.bind("<Button-3>", call_rcMenu)
+        textArea.bind("<Button-3>",call_rcMenu)
 
         # Edit binding
         self.master.bind("<Control-Key-x>", self.cut)
@@ -281,20 +272,8 @@ class NotepadUI:
             start = str(row) + "." + str(col + 1)
 
         # END
-
-        location = textArea.index('current')
-
-        col = int(location.split('.')[1])
-        row = int(location.split('.')[0])
-        letter = textArea.get(str(row) + "." + str(col))
-        search = True
-        while search:
-            if letter != " " and col != 0:
-                col += 1
-                letter = textArea.get(str(row) + "." + str(col))
-            else:
-                search = False
-        end = str(row) + "." + str(col)
+        word_len = len(textArea.get(start, tk.END).split(" ")[0])
+        end = str(row) + "." + str(col + word_len+1)
         return start, end
     
     def searsh(self,e):
