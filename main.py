@@ -221,19 +221,19 @@ class NotepadUI:
 
                         for i in range(len(sorted_suggestion)):
                             if i == 0:
-                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg1)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg1,accelerator='med('+str(sorted_values[i])+')')
 
                             if i == 1:
-                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg2)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg2,accelerator='med('+str(sorted_values[i])+')')
 
                             if i == 2:
-                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg3)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg3,accelerator='med('+str(sorted_values[i])+')')
 
                             if i == 3:
-                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg4)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg4,accelerator='med('+str(sorted_values[i])+')')
 
                             if i == 4:
-                                rcMenu.add_command(label=sorted_keys[i]+'       med('+str(sorted_values[i])+')', command=sugg5)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg5,accelerator='med('+str(sorted_values[i])+')')
 
                     rcMenu.add_separator()
                     rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
