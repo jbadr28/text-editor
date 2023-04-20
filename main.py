@@ -1,18 +1,10 @@
 import pickle
 import re
-import smtplib
-import ssl
 import tkinter as tk
 import webbrowser
-from tkinter import messagebox, filedialog , colorchooser , ttk
+from tkinter import messagebox, filedialog , colorchooser
 from tkinter.ttk import Label
-
-
 from Model.edit import *
-
-
-
-
 
 class NotepadUI:
     def __init__(self, master):
@@ -20,10 +12,8 @@ class NotepadUI:
         self.master.title("Untitled   - AI Notepad")
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
-        self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
-
-        #photo = tk.PhotoImage(file='website/rsc/JT.png')
-        photo = tk.PhotoImage(file="website/rsc/JT.png")
+        #self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
+        photo = tk.PhotoImage(file='website/rsc/JT.png', master=self.master)
         self.master.iconphoto(False, photo)
 
         global current_opened_file
@@ -420,7 +410,7 @@ class NotepadUI:
     def quit(self, e):
         answer = messagebox.askyesno(title= "Exit",message="Are you sure you want to quit?")
         if answer:
-            self.master.quit()
+            self.master.destroy()
 
     # New file
 
@@ -475,8 +465,9 @@ class NotepadUI:
     # New Window
 
     def new_window(self, e):
-        new_wind = tk.Toplevel(root)
-        NotepadUI(new_wind)
+        root = tk.Tk()
+        NotepadUI(root)
+        root.mainloop()
 
 
 
@@ -679,7 +670,7 @@ class NotepadUI:
             report_popup = tk.Toplevel(top)
             report_popup.geometry("450x400")
             report_popup.title("Report a bug in the notepad")
-            photo = tk.PhotoImage(file='website/rsc/JT.png')
+            photo = tk.PhotoImage(file='website/rsc/JT.png', master=report_popup)
             report_popup.wm_iconphoto(False, photo)
             Label(report_popup, text="report is sent,\n you'll recieve our feedback very soon", font=('Mistral 14')).place(x=50, y=10)
             dest = tk.Button(report_popup, command=lambda :top.destroy(), text='Got it', height=2, width=10)
