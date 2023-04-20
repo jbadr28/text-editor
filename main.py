@@ -295,6 +295,7 @@ class NotepadUI:
         webbrowser.open_new_tab(url)
 
     def add_to_Dictionary(self, e):
+        textArea.tag_config("underline", underline=False)
         start, end = self.location(e)
         # remove underline
         
@@ -307,7 +308,7 @@ class NotepadUI:
         vocab.add(word)
 
         # add word to probabilities
-        probs[str(textArea.tag_add("underline",start,end))]='1e-06'
+        probs[str(textArea.tag_add("underline",start,end))]=1e-06
         print('word ',textArea.get(start,end),'added to vocab and will not be underlined')
 
         with open('Model/vocab.pkl','wb') as f:
@@ -318,7 +319,7 @@ class NotepadUI:
             pickle.dump(probs, s)
             s.close()
 
-        self.correct(False)
+        self.scaner(e)
 
     def last(self, e):
         text = textArea.get(1.0, tk.END).strip().lower()
@@ -333,6 +334,7 @@ class NotepadUI:
             return str(w).strip().lower()
 
     def scaner(self, e):
+        textArea.tag_config("underline", underline=False)
         text = textArea.get(1.0, tk.END).strip().lower()
         if text != "":
             list_ = re.findall('\w+', text)
@@ -347,14 +349,16 @@ class NotepadUI:
                         break
                     pos_end = pos_start + f'+{len(w)}c'
                     if w not in updated_vocab:
-                        textArea.tag_config("underline", underline=True, underlinefg="red")
                         textArea.tag_add("underline", pos_start, pos_end)
+                        textArea.tag_config("underline", underline=True, underlinefg="red")
+                        
                     start_index = pos_end
 
     
     # Correct word
 
     def correct(self, e):
+        textArea.tag_config("underline", underline=False)
         w = self.last(e)
         start_index = '1.0'
         with open('Model/vocab.pkl','rb') as f :
