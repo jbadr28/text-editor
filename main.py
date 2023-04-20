@@ -147,15 +147,15 @@ class NotepadUI:
             rcMenu.tk_popup(e.x_root, e.y_root)
 
         def call_suggestions_menu(e):
+            # START
             location = textArea.index('current')
 
             col = int(location.split('.')[1])
             row = int(location.split('.')[0])
             letter = textArea.get(str(row) + "." + str(col))
-            print("letter"+ letter.strip()+ "fucking")
+            print("letter" + letter.strip() + "fucking")
             if letter.strip() != "":
-                
-                # START
+
                 search = True
                 while search:
                     if letter != " " and col != 0:
@@ -163,64 +163,95 @@ class NotepadUI:
                         letter = textArea.get(str(row) + "." + str(col))
                     else:
                         search = False
-                if col ==0 :
-                    start = str(row) + "." + str(col )
-                else :
+                if col == 0:
+                    start = str(row) + "." + str(col)
+                else:
                     start = str(row) + "." + str(col + 1)
 
                 # END
-                word_len = len(textArea.get(start, tk.END).split(" ")[0])
-                end = str(row) + "." + str(col + word_len+1)
+                location = textArea.index('current')
+
+                col = int(location.split('.')[1])
+                row = int(location.split('.')[0])
+                letter = textArea.get(location)
+                search = True
+                while search:
+                    if letter != " " and col != 0:
+                        col += 1
+                        letter = textArea.get(str(row) + "." + str(col))
+                    else:
+                        search = False
+                end = str(row) + "." + str(col)
 
                 textArea.tag_add(tk.SEL, start, end)
 
-                word = textArea.get(start, end).lower()
-                with open('Model/vocab.pkl','rb') as f :
+                word = textArea.get(start, end)
+                with open('Model/vocab.pkl', 'rb') as f:
                     updated_vocab = pickle.load(f)
                     f.close()
                 with open('Model/probs.pkl', 'rb') as f:
                     updated_probs = pickle.load(f)
                     f.close()
-                if word not in updated_vocab :
+                if word not in updated_vocab:
                     list_ = get_corrections(word, updated_probs, updated_vocab)
-                    print('hdachi ll dayr lmachkil ',list_)
+                    print('hdachi ll dayr lmachkil ', list_)
                     if len(list_) != 0:
+                        list_ = [list_[i][0] for i in range(len(list_))]
+
                         labels = list_[:5]
-                        sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
-                        suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
+                        # suggestion_med = map(list_,min_edit_distance())
+                        suggestion_med = [min_edit_distance(word, list_[i]) for i in range(len(list_))]
+                        print('sugg med', suggestion_med)
+                        print('list sugg', list_)
+                        word_med = {}
+                        for i in range(len(list_)):
+                            # word_med.update({tuple(list_[i]): suggestion_med[i]})  # Convert list_[i] to a tuple
+                            word_med.update({"".join(list_[i]): suggestion_med[i]})
+                        sorted_suggestion = dict(sorted(word_med.items(), key=lambda x: x[1]))
+                        print('word_med', word_med)
+                        print('sorted ', sorted_suggestion)
+                        sorted_keys = list(sorted_suggestion.keys())
+                        sorted_values = list(sorted_suggestion.values())
+
+                        # sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
+                        # suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
 
                         # Right click Menu that will contain the words
                         def sugg1():
-                            textArea.replace(start, end, suggestions[0])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg2():
-                            textArea.replace(start, end, suggestions[1])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg3():
-                            textArea.replace(start, end, suggestions[2])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg4():
-                            textArea.replace(start, end, suggestions[3])
+                            textArea.replace(start, end, sorted_keys[i])
 
                         def sugg5():
-                            textArea.replace(start, end, suggestions[4])
+                            textArea.replace(start, end, sorted_keys[i])
 
-                        for i in range(len(suggestions)):
+                        for i in range(len(sorted_suggestion)):
                             if i == 0:
-                                rcMenu.add_command(label=suggestions[i], command=sugg1)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg1,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 1:
-                                rcMenu.add_command(label=suggestions[i], command=sugg2)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg2,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 2:
-                                rcMenu.add_command(label=suggestions[i], command=sugg3)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg3,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 3:
-                                rcMenu.add_command(label=suggestions[i], command=sugg4)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg4,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 4:
-                                rcMenu.add_command(label=suggestions[i], command=sugg5)
-
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg5,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
                     rcMenu.add_separator()
                     menu_commands(1)
                 else:
