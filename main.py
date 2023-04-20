@@ -13,7 +13,8 @@ class NotepadUI:
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
         self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
-
+        photo = tk.PhotoImage(file='website/rsc/JT.png')
+        self.master.wm_iconphoto(False, photo)
         global current_opened_file
         current_opened_file = False
 
@@ -218,19 +219,19 @@ class NotepadUI:
 
                         # Right click Menu that will contain the words
                         def sugg1():
-                            textArea.replace(start, end, sorted_keys[i])
+                            textArea.replace(start, end, sorted_keys[0])
 
                         def sugg2():
-                            textArea.replace(start, end, sorted_keys[i])
+                            textArea.replace(start, end, sorted_keys[1])
 
                         def sugg3():
-                            textArea.replace(start, end, sorted_keys[i])
+                            textArea.replace(start, end, sorted_keys[2])
 
                         def sugg4():
-                            textArea.replace(start, end, sorted_keys[i])
+                            textArea.replace(start, end, sorted_keys[3])
 
                         def sugg5():
-                            textArea.replace(start, end, sorted_keys[i])
+                            textArea.replace(start, end, sorted_keys[4])
 
                         for i in range(len(sorted_suggestion)):
                             if i == 0:
