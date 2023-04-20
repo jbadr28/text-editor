@@ -596,7 +596,7 @@ class NotepadUI:
         font_size = int(current_font.split(' ')[-1])
 
         # Calculate the new font size after applying the zoom factor
-        new_font_size = int(font_size +4)
+        new_font_size = int(font_size +2)
 
         # Update the font size in the Text widget
         textArea.config(font=(current_font.split(' ')[0], new_font_size))
@@ -607,7 +607,7 @@ class NotepadUI:
         font_size = int(current_font.split(' ')[-1])
 
         # Calculate the new font size after applying the zoom factor
-        new_font_size = int(font_size - 4)
+        new_font_size = int(font_size - 2)
 
         # Update the font size in the Text widget
         textArea.config(font=(current_font.split(' ')[0], new_font_size))
