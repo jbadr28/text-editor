@@ -302,3 +302,93 @@
     color: #993F0C;
     font-weight: bold;
 }
+
+#to-blur.active{
+    filter: blur(20px);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* report CSS code*/
+#report{
+    background-color: #ffffff;
+    border: 3px solid #993F0C;
+    position: fixed;
+    width: 500px;
+    height: 600px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+#report.active{
+    top: 50%;
+    visibility: visible;
+    opacity: 1;
+    transition: 0.5s;
+}
+#report h2{
+    text-align: center;
+    font-size: 40px;
+    padding-bottom: 5%;
+    padding-top: 5%;
+    color: #993F0C;
+    font-weight: bold;
+}
+
+#report p{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-bottom: 2%;
+}
+#report #form{
+    margin-left: 15%;
+}
+#report #form label{
+    color: #993F0C;
+    font-weight: bold;
+}
+#report #name{
+    border: 0;
+    outline: none;
+    background-color: #e9f3dd;
+    padding: 1%;
+    border-radius: 5px;
+    width: 80%;
+    margin-bottom: 4%;
+}
+#report #email{
+    border: 0;
+    outline: none;
+    background-color: #e9f3dd;
+    padding: 1%;
+    border-radius: 5px;
+    width: 80%;
+    margin-bottom: 4%;
+}
+
+#report #descbug{
+    outline: none;
+    border: 0;
+    background-color: #e9f3dd;
+    padding: 1%;
+    width: 80%;
+    max-height: 130px;
+    margin-bottom: 4%;
+}
+
+#report #btn{
+    background-color: #993F0C;
+    color: white;
+    margin-left: 5%;
+}
+#report #form #btn-container{
+    text-align: end;
+    margin-right: 20%;
+}
