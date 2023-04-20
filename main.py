@@ -94,15 +94,12 @@ class NotepadUI:
 
         menuBar.add_cascade(label="View", menu=viewMenu)
 
-        # About Menu
-        aboutMenu = tk.Menu(menuBar, tearoff=0, bg="#f2fef7")
-        aboutMenu.add_command(label="About Notepad AI", command=self.about)
-        menuBar.add_cascade(label="About", menu=aboutMenu)
-
-        # report bug menu
-        bugMenu = tk.Menu(menuBar, bg="#f2fef7", tearoff=0,borderwidth=0)
-        bugMenu.add_command(label="Report a bug", command=lambda: self.bugPopUp())
-        menuBar.add_cascade(label="report", menu=bugMenu)
+        # Help Menu
+        helpMenu = tk.Menu(menuBar, tearoff=0, bg="#f2fef7")
+        helpMenu.add_command(label="Report a bug", command=lambda: self.bugPopUp())
+        helpMenu.add_command(label="About Notepad AI", command=self.about)
+        menuBar.add_cascade(label="Help", menu=helpMenu)
+        
         # Scrollbar
         scrollbar = tk.Scrollbar(self.master, background="#f2fef7")
         scrollbar.pack(side="right", fill="y")
@@ -195,19 +192,8 @@ class NotepadUI:
                     start = str(row) + "." + str(col + 1)
 
                 # END
-                location = textArea.index('current')
-
-                col = int(location.split('.')[1])
-                row = int(location.split('.')[0])
-                letter = textArea.get(location)
-                search = True
-                while search:
-                    if letter != " " and col != 0:
-                        col += 1
-                        letter = textArea.get(str(row) + "." + str(col))
-                    else:
-                        search = False
-                end = str(row) + "." + str(col)
+                word_len = len(textArea.get(start, tk.END).split(" ")[0])
+                end = str(row) + "." + str(col + word_len+1)
 
                 textArea.tag_add(tk.SEL, start, end)
 
@@ -260,24 +246,24 @@ class NotepadUI:
 
                         for i in range(len(sorted_suggestion)):
                             if i == 0:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg1,
-                                                   accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg1,)
+                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 1:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg2,
-                                                   accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg2,)
+                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 2:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg3,
-                                                   accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg3,)
+                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 3:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg4,
-                                                   accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg4,)
+                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 4:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg5,
-                                                   accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg5,)
+                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
                     rcMenu.add_separator()
                     menu_commands(1)
                 else:
@@ -680,7 +666,6 @@ class NotepadUI:
            From: %s
            To: %s
            Subject: %s
-
            %s
            """ % (sent_from, ", ".join(to), subject, body)
 
