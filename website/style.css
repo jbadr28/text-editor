@@ -100,6 +100,33 @@
         font-size: 95%; 
     }
 
+    #cont-title h2{
+        font-size: 36.5px;
+    }
+    #cont h2{
+        font-size: 27px;
+
+    }
+    #table #holder{
+        font-size: 14.5px;
+
+    }
+    #table #data{
+        font-size: 14.5px;
+    }
+    #contact a i {
+        font-size: 22px;
+    }
+    #us-img img{
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+        border-radius: 5%;
+        text-align: center;
+    }
+    
+
 }
 
 @media only screen and (max-width: 1280px) {
@@ -118,6 +145,32 @@
     }
     #mynav #dw {
         font-size: 86%; 
+    }
+
+    #cont-title h2{
+        font-size: 33px;
+    }
+    #cont h2{
+        font-size: 23px;
+
+    }
+    #table #holder{
+        font-size: 11.5px;
+
+    }
+    #table #data{
+        font-size: 11.5px;
+    }
+    #contact a i {
+        font-size: 19px;
+    }
+    #us-img img{
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+        border-radius: 5%;
+        text-align: center;
     }
 
 }
