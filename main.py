@@ -7,7 +7,6 @@ import webbrowser
 from tkinter import messagebox, filedialog , colorchooser , ttk
 from tkinter.ttk import Label
 
-from win32comext.shell.demos.servers.folder_view import make_item_enum
 
 from Model.edit import *
 
@@ -23,8 +22,9 @@ class NotepadUI:
         self.master.configure(bg="#f2fef7")
         self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
 
-        photo = tk.PhotoImage(file='website/rsc/JT.png')
-        self.master.wm_iconphoto(False, photo)
+        #photo = tk.PhotoImage(file='website/rsc/JT.png')
+        photo = tk.PhotoImage(file="website/rsc/JT.png")
+        self.master.iconphoto(False, photo)
 
         global current_opened_file
         current_opened_file = False
@@ -489,9 +489,10 @@ class NotepadUI:
     # New Window
 
     def new_window(self, e):
-        root = tk.Tk()
-        NotepadUI(root)
-        root.mainloop()
+        new_wind = tk.Toplevel(root)
+        NotepadUI(new_wind)
+
+
 
     # Save As File
 
