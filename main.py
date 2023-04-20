@@ -62,6 +62,7 @@ class NotepadUI:
         editMenu.add_separator()
         editMenu.add_command(label="Clear the page", command=lambda : self.clear(False))
         editMenu.add_command(label="Background color", command=lambda : self.change_back_ground_color())
+        editMenu.add_command(label="Font color", command=lambda: self.change_font_color())
 
         menuBar.add_cascade(label="Edit", menu=editMenu)
 
@@ -69,8 +70,8 @@ class NotepadUI:
         viewMenu = tk.Menu(menuBar, tearoff=0, bg="#f2fef7")
         zoomMenu = tk.Menu(viewMenu, tearoff=0, bg="#f2fef7")
         viewMenu.add_cascade(label="Zoom", menu=zoomMenu)
-        zoomMenu.add_command(label="Zoom in", command="")
-        zoomMenu.add_command(label="Zoom out", command="")
+        zoomMenu.add_command(label="Zoom in", command=lambda : self.zoomIn())
+        zoomMenu.add_command(label="Zoom out", command=lambda : self.zoomOut())
         viewMenu.add_separator()
         viewMenu.add_command(label="Status bar", command="")
 
@@ -574,6 +575,42 @@ class NotepadUI:
     def change_back_ground_color(self):
         color = colorchooser.askcolor()[1]  # Open color dialog and get the chosen color
         textArea.config(bg=color)
+
+    def change_font_color(self):
+        # Open a color chooser dialog
+        color = colorchooser.askcolor()[1]
+
+        # Delete any existing "default" tag
+        textArea.tag_delete("default")
+
+        # Configure a new "default" tag with the selected color
+        textArea.tag_configure("default", foreground=color)
+
+        # Apply the "default" tag to all existing text in the Text widget
+        textArea.tag_add("default", "1.0", tk.END)
+
+    def zoomIn(self):
+        # Get the current font size of the Text widget
+        current_font = textArea['font']
+        print(current_font)
+        font_size = int(current_font.split(' ')[-1])
+
+        # Calculate the new font size after applying the zoom factor
+        new_font_size = int(font_size +4)
+
+        # Update the font size in the Text widget
+        textArea.config(font=(current_font.split(' ')[0], new_font_size))
+
+    def zoomOut(self):
+        current_font = textArea['font']
+        print(current_font)
+        font_size = int(current_font.split(' ')[-1])
+
+        # Calculate the new font size after applying the zoom factor
+        new_font_size = int(font_size - 4)
+
+        # Update the font size in the Text widget
+        textArea.config(font=(current_font.split(' ')[0], new_font_size))
 
 
 if __name__ == "__main__":
