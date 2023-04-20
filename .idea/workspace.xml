@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c1b3610-46b9-4a35-9d30-9756578558a0" name="Changes" comment="zoom in/out by 2">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/edit.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/edit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="2c1b3610-46b9-4a35-9d30-9756578558a0" name="Changes" comment="report a bug" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -254,7 +250,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681956679554</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="report a bug">
+      <created>1681970496424</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1681970496424</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -299,6 +302,7 @@
     <MESSAGE value="clear page and change background color" />
     <MESSAGE value="zoom in/out added" />
     <MESSAGE value="zoom in/out by 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="zoom in/out by 2" />
+    <MESSAGE value="report a bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="report a bug" />
   </component>
 </project>
