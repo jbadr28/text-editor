@@ -2,7 +2,10 @@ import pickle
 import re
 import tkinter as tk
 import webbrowser
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog , colorchooser
+
+from win32comext.shell.demos.servers.folder_view import make_item_enum
+
 from Model.edit import *
 
 
@@ -57,8 +60,8 @@ class NotepadUI:
         editMenu.add_command(label="Select All", command=lambda: self.select_all(
             False), accelerator="Ctrl+A")
         editMenu.add_separator()
-        editMenu.add_command(label="Clear the page", command="")
-        editMenu.add_command(label="Background color", command="")
+        editMenu.add_command(label="Clear the page", command=lambda : self.clear(False))
+        editMenu.add_command(label="Background color", command=lambda : self.change_back_ground_color())
 
         menuBar.add_cascade(label="Edit", menu=editMenu)
 
@@ -78,6 +81,11 @@ class NotepadUI:
         aboutMenu.add_command(label="About Notepad AI", command=self.about)
         menuBar.add_cascade(label="About", menu=aboutMenu)
 
+        # report bug menu
+        bugMenu = tk.Menu(menuBar, bg="#f2fef7", borderwidth=0)
+        bugMenu.add_command(label="Report a bug", command=lambda: self.new_file(
+            False), accelerator="Ctrl+N")
+        menuBar.add_cascade(label="report", menu=bugMenu)
         # Scrollbar
         scrollbar = tk.Scrollbar(self.master, background="#f2fef7")
         scrollbar.pack(side="right", fill="y")
@@ -559,6 +567,13 @@ class NotepadUI:
         messagebox.showinfo(
             title="Welcome User!",
             message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!")
+
+    def clear(self, e):
+        textArea.delete(1.0,tk.END)
+
+    def change_back_ground_color(self):
+        color = colorchooser.askcolor()[1]  # Open color dialog and get the chosen color
+        textArea.config(bg=color)
 
 
 if __name__ == "__main__":

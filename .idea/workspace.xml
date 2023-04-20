@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c1b3610-46b9-4a35-9d30-9756578558a0" name="Changes" comment="sort suggestion by Min Edit Dist">
+    <list default="true" id="2c1b3610-46b9-4a35-9d30-9756578558a0" name="Changes" comment="sugg_i function indexes corrected">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -217,7 +218,21 @@
       <option name="project" value="LOCAL" />
       <updated>1681952114974</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="sougg_i function indexes corrected">
+      <created>1681953272804</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1681953272804</updated>
+    </task>
+    <task id="LOCAL-00016" summary="sugg_i function indexes corrected">
+      <created>1681953301861</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1681953301861</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -257,6 +272,8 @@
     <MESSAGE value="sort suggestion by minimum edit distance" />
     <MESSAGE value="sort suggestion by minimum edit distance 1" />
     <MESSAGE value="sort suggestion by Min Edit Dist" />
-    <option name="LAST_COMMIT_MESSAGE" value="sort suggestion by Min Edit Dist" />
+    <MESSAGE value="sougg_i function indexes corrected" />
+    <MESSAGE value="sugg_i function indexes corrected" />
+    <option name="LAST_COMMIT_MESSAGE" value="sugg_i function indexes corrected" />
   </component>
 </project>
