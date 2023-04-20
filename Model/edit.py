@@ -166,7 +166,7 @@ def get_corrections(word, probs, vocab, n=2, verbose=False):
         (word in vocab and word) or edit_one_letter(word).intersection(vocab) or edit_two_letters(word).intersection(
             vocab))
     n_best = [[s, probs[s]] for s in list(reversed(suggestions))]
-    n_best = list(reversed(suggestions))[:-5]
+    #n_best = list(reversed(suggestions))[:-5]
     ### END CODE HERE ###
 
     if verbose: print("suggestions = ", suggestions)

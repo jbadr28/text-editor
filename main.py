@@ -86,8 +86,8 @@ class NotepadUI:
         zoomMenu = tk.Menu(viewMenu, tearoff=0, bg="#f2fef7")
         viewMenu.add_cascade(label="Zoom", menu=zoomMenu)
 
-        zoomMenu.add_command(label="Zoom in", command=lambda : self.zoomIn())
-        zoomMenu.add_command(label="Zoom out", command=lambda : self.zoomOut())
+        zoomMenu.add_command(label="Zoom in", command=lambda : self.zoomIn(False))
+        zoomMenu.add_command(label="Zoom out", command=lambda : self.zoomOut(False))
 
         viewMenu.add_separator()
         viewMenu.add_command(label="Status bar", command="", accelerator="Comming Soon", activebackground="red", activeforeground="white")
@@ -100,7 +100,7 @@ class NotepadUI:
         menuBar.add_cascade(label="About", menu=aboutMenu)
 
         # report bug menu
-        bugMenu = tk.Menu(menuBar, bg="#f2fef7", borderwidth=0)
+        bugMenu = tk.Menu(menuBar, bg="#f2fef7", tearoff=0,borderwidth=0)
         bugMenu.add_command(label="Report a bug", command=lambda: self.bugPopUp())
         menuBar.add_cascade(label="report", menu=bugMenu)
         # Scrollbar
@@ -690,6 +690,16 @@ class NotepadUI:
             smtp_server.sendmail(sent_from, to, email_text)
             smtp_server.close()
             print("Email sent successfully!")
+            report_popup = tk.Toplevel(top)
+            report_popup.geometry("450x400")
+            report_popup.title("Report a bug in the notepad")
+            photo = tk.PhotoImage(file='website/rsc/JT.png')
+            report_popup.wm_iconphoto(False, photo)
+            Label(report_popup, text="report is sent,\n you'll recieve our feedback very soon", font=('Mistral 14')).place(x=50, y=10)
+            dest = tk.Button(report_popup, command=lambda :top.destroy(), text='Got it', height=2, width=10)
+            dest.pack()
+            dest.place(x=150, y=80)
+
         except Exception as ex:
             print("Something went wrong...", ex)
         print(email.strip(),report.strip())
