@@ -22,13 +22,18 @@ class NotepadUI:
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
         self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
+
         photo = tk.PhotoImage(file='website/rsc/JT.png')
         self.master.wm_iconphoto(False, photo)
+
         global current_opened_file
         current_opened_file = False
 
         global selected
         selected = False
+
+        global font 
+        font = ["Lucida Console", 12]
 
         # Set up the UI elements
 
@@ -66,9 +71,13 @@ class NotepadUI:
         editMenu.add_command(label="Select All", command=lambda: self.select_all(
             False), accelerator="Ctrl+A")
         editMenu.add_separator()
+
+
+
         editMenu.add_command(label="Clear the page", command=lambda : self.clear(False))
         editMenu.add_command(label="Background color", command=lambda : self.change_back_ground_color())
         editMenu.add_command(label="Font color", command=lambda: self.change_font_color())
+
 
         menuBar.add_cascade(label="Edit", menu=editMenu)
 
@@ -76,10 +85,12 @@ class NotepadUI:
         viewMenu = tk.Menu(menuBar, tearoff=0, bg="#f2fef7")
         zoomMenu = tk.Menu(viewMenu, tearoff=0, bg="#f2fef7")
         viewMenu.add_cascade(label="Zoom", menu=zoomMenu)
+
         zoomMenu.add_command(label="Zoom in", command=lambda : self.zoomIn())
         zoomMenu.add_command(label="Zoom out", command=lambda : self.zoomOut())
+
         viewMenu.add_separator()
-        viewMenu.add_command(label="Status bar", command="")
+        viewMenu.add_command(label="Status bar", command="", accelerator="Comming Soon", activebackground="red", activeforeground="white")
 
         menuBar.add_cascade(label="View", menu=viewMenu)
 
@@ -99,7 +110,7 @@ class NotepadUI:
         # text Area
         global textArea
         textArea = tk.Text(self.master, borderwidth=0,
-                           font=("Lucida Console", 12),
+                           font=font,
                            selectbackground="skyblue",
                            selectforeground="black",
                            yscrollcommand=scrollbar.set,
@@ -297,8 +308,10 @@ class NotepadUI:
         self.master.bind("<Return>", self.correct)
         self.master.bind("<Alt-Key-c>", self.scaner)
         self.master.bind("<Alt-Key-C>", self.scaner)
+
         self.master.bind("<Control-plus>",self.zoomIn)
         self.master.bind("<Control-minus>", self.zoomOut)
+
 
 
     def location(self, e):
@@ -569,12 +582,21 @@ class NotepadUI:
             textArea.insert(position, selected)
             self.master.clipboard_clear()
             self.master.clipboard_append(selected)
+    
+    def zoom(self, e):
+        global font
+        if e:
+            font[1] = font[1] + 2 
+        else:
+            font[1] = font[1] - 2 
+        textArea.configure(font=font)
+
 
     # About Message function
     def about(self):
         messagebox.showinfo(
             title="Welcome User!",
-            message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day sir!")
+            message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day!")
 
     def clear(self, e):
         textArea.delete(1.0,tk.END)
