@@ -1,9 +1,18 @@
 import pickle
 import re
+import smtplib
+import ssl
 import tkinter as tk
 import webbrowser
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog , colorchooser , ttk
+from tkinter.ttk import Label
+
+from win32comext.shell.demos.servers.folder_view import make_item_enum
+
 from Model.edit import *
+
+
+
 
 
 class NotepadUI:
@@ -13,7 +22,8 @@ class NotepadUI:
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
         self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
-        photo = tk.PhotoImage(file = 'website/rsc/JT.png')
+
+        photo = tk.PhotoImage(file='website/rsc/JT.png')
         self.master.wm_iconphoto(False, photo)
 
         global current_opened_file
@@ -61,8 +71,13 @@ class NotepadUI:
         editMenu.add_command(label="Select All", command=lambda: self.select_all(
             False), accelerator="Ctrl+A")
         editMenu.add_separator()
-        editMenu.add_command(label="Clear the page", command="", accelerator="Comming Soon")
-        editMenu.add_command(label="Background color", command="", accelerator="Comming Soon")
+
+
+
+        editMenu.add_command(label="Clear the page", command=lambda : self.clear(False))
+        editMenu.add_command(label="Background color", command=lambda : self.change_back_ground_color())
+        editMenu.add_command(label="Font color", command=lambda: self.change_font_color())
+
 
         menuBar.add_cascade(label="Edit", menu=editMenu)
 
@@ -70,8 +85,10 @@ class NotepadUI:
         viewMenu = tk.Menu(menuBar, tearoff=0, bg="#f2fef7")
         zoomMenu = tk.Menu(viewMenu, tearoff=0, bg="#f2fef7")
         viewMenu.add_cascade(label="Zoom", menu=zoomMenu)
-        zoomMenu.add_command(label="Zoom in", command=lambda: self.zoom(True), accelerator="Ctrl++")
-        zoomMenu.add_command(label="Zoom out", command=lambda: self.zoom(False), accelerator="Ctrl--")
+
+        zoomMenu.add_command(label="Zoom in", command=lambda : self.zoomIn())
+        zoomMenu.add_command(label="Zoom out", command=lambda : self.zoomOut())
+
         viewMenu.add_separator()
         viewMenu.add_command(label="Status bar", command="", accelerator="Comming Soon", activebackground="red", activeforeground="white")
 
@@ -82,6 +99,10 @@ class NotepadUI:
         aboutMenu.add_command(label="About Notepad AI", command=self.about)
         menuBar.add_cascade(label="About", menu=aboutMenu)
 
+        # report bug menu
+        bugMenu = tk.Menu(menuBar, bg="#f2fef7", borderwidth=0)
+        bugMenu.add_command(label="Report a bug", command=lambda: self.bugPopUp())
+        menuBar.add_cascade(label="report", menu=bugMenu)
         # Scrollbar
         scrollbar = tk.Scrollbar(self.master, background="#f2fef7")
         scrollbar.pack(side="right", fill="y")
@@ -152,15 +173,15 @@ class NotepadUI:
             rcMenu.tk_popup(e.x_root, e.y_root)
 
         def call_suggestions_menu(e):
+            # START
             location = textArea.index('current')
 
             col = int(location.split('.')[1])
             row = int(location.split('.')[0])
             letter = textArea.get(str(row) + "." + str(col))
-            print("letter"+ letter.strip()+ "fucking")
+            print("letter" + letter.strip() + "fucking")
             if letter.strip() != "":
-                
-                # START
+
                 search = True
                 while search:
                     if letter != " " and col != 0:
@@ -168,64 +189,95 @@ class NotepadUI:
                         letter = textArea.get(str(row) + "." + str(col))
                     else:
                         search = False
-                if col ==0 :
-                    start = str(row) + "." + str(col )
-                else :
+                if col == 0:
+                    start = str(row) + "." + str(col)
+                else:
                     start = str(row) + "." + str(col + 1)
 
                 # END
-                word_len = len(textArea.get(start, tk.END).split(" ")[0])
-                end = str(row) + "." + str(col + word_len+1)
+                location = textArea.index('current')
+
+                col = int(location.split('.')[1])
+                row = int(location.split('.')[0])
+                letter = textArea.get(location)
+                search = True
+                while search:
+                    if letter != " " and col != 0:
+                        col += 1
+                        letter = textArea.get(str(row) + "." + str(col))
+                    else:
+                        search = False
+                end = str(row) + "." + str(col)
 
                 textArea.tag_add(tk.SEL, start, end)
 
-                word = textArea.get(start, end).lower()
-                with open('Model/vocab.pkl','rb') as f :
+                word = textArea.get(start, end)
+                with open('Model/vocab.pkl', 'rb') as f:
                     updated_vocab = pickle.load(f)
                     f.close()
                 with open('Model/probs.pkl', 'rb') as f:
                     updated_probs = pickle.load(f)
                     f.close()
-                if word not in updated_vocab :
+                if word not in updated_vocab:
                     list_ = get_corrections(word, updated_probs, updated_vocab)
-                    print('hdachi ll dayr lmachkil ',list_)
+                    print('hdachi ll dayr lmachkil ', list_)
                     if len(list_) != 0:
+                        list_ = [list_[i][0] for i in range(len(list_))]
+
                         labels = list_[:5]
-                        sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
-                        suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
+                        # suggestion_med = map(list_,min_edit_distance())
+                        suggestion_med = [min_edit_distance(word, list_[i]) for i in range(len(list_))]
+                        print('sugg med', suggestion_med)
+                        print('list sugg', list_)
+                        word_med = {}
+                        for i in range(len(list_)):
+                            # word_med.update({tuple(list_[i]): suggestion_med[i]})  # Convert list_[i] to a tuple
+                            word_med.update({"".join(list_[i]): suggestion_med[i]})
+                        sorted_suggestion = dict(sorted(word_med.items(), key=lambda x: x[1]))
+                        print('word_med', word_med)
+                        print('sorted ', sorted_suggestion)
+                        sorted_keys = list(sorted_suggestion.keys())
+                        sorted_values = list(sorted_suggestion.values())
+
+                        # sorted_labels = sorted(labels, key=lambda x: x[1], reverse=True)
+                        # suggestions = [sorted_labels[i][0] for i in range(len(sorted_labels))]
 
                         # Right click Menu that will contain the words
                         def sugg1():
-                            textArea.replace(start, end, suggestions[0])
+                            textArea.replace(start, end, sorted_keys[0])
 
                         def sugg2():
-                            textArea.replace(start, end, suggestions[1])
+                            textArea.replace(start, end, sorted_keys[1])
 
                         def sugg3():
-                            textArea.replace(start, end, suggestions[2])
+                            textArea.replace(start, end, sorted_keys[2])
 
                         def sugg4():
-                            textArea.replace(start, end, suggestions[3])
+                            textArea.replace(start, end, sorted_keys[3])
 
                         def sugg5():
-                            textArea.replace(start, end, suggestions[4])
+                            textArea.replace(start, end, sorted_keys[4])
 
-                        for i in range(len(suggestions)):
+                        for i in range(len(sorted_suggestion)):
                             if i == 0:
-                                rcMenu.add_command(label=suggestions[i], command=sugg1)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg1,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 1:
-                                rcMenu.add_command(label=suggestions[i], command=sugg2)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg2,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 2:
-                                rcMenu.add_command(label=suggestions[i], command=sugg3)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg3,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 3:
-                                rcMenu.add_command(label=suggestions[i], command=sugg4)
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg4,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 4:
-                                rcMenu.add_command(label=suggestions[i], command=sugg5)
-
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg5,
+                                                   accelerator='med(' + str(sorted_values[i]) + ')')
                     rcMenu.add_separator()
                     menu_commands(1)
                 else:
@@ -256,8 +308,10 @@ class NotepadUI:
         self.master.bind("<Return>", self.correct)
         self.master.bind("<Alt-Key-c>", self.scaner)
         self.master.bind("<Alt-Key-C>", self.scaner)
-        self.master.bind("<Control-Key-plus>",lambda: self.zoom(False, True))
-        self.master.bind("<Control-Key-minus>",lambda: self.zoom(False, False))
+
+        self.master.bind("<Control-plus>",self.zoomIn)
+        self.master.bind("<Control-minus>", self.zoomOut)
+
 
 
     def location(self, e):
@@ -547,6 +601,98 @@ class NotepadUI:
         messagebox.showinfo(
             title="Welcome User!",
             message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day!")
+
+    def clear(self, e):
+        textArea.delete(1.0,tk.END)
+
+    def change_back_ground_color(self):
+        color = colorchooser.askcolor()[1]  # Open color dialog and get the chosen color
+        textArea.config(bg=color)
+
+    def change_font_color(self):
+        # Open a color chooser dialog
+        color = colorchooser.askcolor()[1]
+
+        # Delete any existing "default" tag
+        textArea.tag_delete("default")
+
+        # Configure a new "default" tag with the selected color
+        textArea.tag_configure("default", foreground=color)
+
+        # Apply the "default" tag to all existing text in the Text widget
+        textArea.tag_add("default", "1.0", tk.END)
+
+    def zoomIn(self,e):
+        # Get the current font size of the Text widget
+        current_font = textArea['font']
+
+        font_size = int(current_font.split(' ')[-1])
+
+        # Calculate the new font size after applying the zoom factor
+        new_font_size = int(font_size +2)
+
+        # Update the font size in the Text widget
+        textArea.config(font=(current_font.split(' ')[0], new_font_size))
+
+    def zoomOut(self,e):
+        current_font = textArea['font']
+        print(current_font)
+        font_size = int(current_font.split(' ')[-1])
+
+        # Calculate the new font size after applying the zoom factor
+        new_font_size = int(font_size - 2)
+
+        # Update the font size in the Text widget
+        textArea.config(font=(current_font.split(' ')[0], new_font_size))
+
+    def bugPopUp(self):
+        top = tk.Toplevel(root)
+        top.geometry("750x750")
+        top.title("Report a bug in the notepad")
+        photo = tk.PhotoImage(file='website/rsc/JT.png')
+        top.wm_iconphoto(False, photo)
+        Label(top, text="Enter your email", font=('Mistral 14')).place(x=50, y=10)
+        emailfield = tk.Text(top, height=2, width=40 )
+        Label(top, text="describe the bug", font=('Mistral 14')).place(x=50, y=80)
+        reportfield = tk.Text(top, height=20, width=40)
+
+        emailfield.pack()
+        reportfield.pack()
+        emailfield.place(x=200, y=10)
+        reportfield.place(x=200, y=80)
+        send = tk.Button(top,command=lambda :self.sendEmail(top,emailfield.get(1.0,tk.END),reportfield.get(1.0,tk.END)),text='Send Report',height=2,width=10)
+        send.pack()
+        send.place(x=345, y=475)
+
+    def sendEmail(self,top,email,report):
+        import smtplib
+        import ssl
+        sent_from= 'je.notepad.nlp@gmail.com'
+        gmail_password = 'zverinwdaamwoeim'
+
+        to = ['badreddinejalili@gmail.com', 'mohammed.tati21@gmail.com']
+        subject = 'Bug Report - Email: '  + email.strip()
+        print(subject)
+        body = report
+
+        email_text = """\
+           From: %s
+           To: %s
+           Subject: %s
+
+           %s
+           """ % (sent_from, ", ".join(to), subject, body)
+
+        try:
+            smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            smtp_server.ehlo()
+            smtp_server.login(sent_from, gmail_password)
+            smtp_server.sendmail(sent_from, to, email_text)
+            smtp_server.close()
+            print("Email sent successfully!")
+        except Exception as ex:
+            print("Something went wrong...", ex)
+        print(email.strip(),report.strip())
 
 
 if __name__ == "__main__":
