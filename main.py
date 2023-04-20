@@ -1,12 +1,18 @@
 import pickle
 import re
+import smtplib
+import ssl
 import tkinter as tk
 import webbrowser
-from tkinter import messagebox, filedialog , colorchooser
+from tkinter import messagebox, filedialog , colorchooser , ttk
+from tkinter.ttk import Label
 
 from win32comext.shell.demos.servers.folder_view import make_item_enum
 
 from Model.edit import *
+
+
+
 
 
 class NotepadUI:
@@ -84,8 +90,7 @@ class NotepadUI:
 
         # report bug menu
         bugMenu = tk.Menu(menuBar, bg="#f2fef7", borderwidth=0)
-        bugMenu.add_command(label="Report a bug", command=lambda: self.new_file(
-            False), accelerator="Ctrl+N")
+        bugMenu.add_command(label="Report a bug", command=lambda: self.bugPopUp())
         menuBar.add_cascade(label="report", menu=bugMenu)
         # Scrollbar
         scrollbar = tk.Scrollbar(self.master, background="#f2fef7")
@@ -292,6 +297,8 @@ class NotepadUI:
         self.master.bind("<Return>", self.correct)
         self.master.bind("<Alt-Key-c>", self.scaner)
         self.master.bind("<Alt-Key-C>", self.scaner)
+        self.master.bind("<Control-plus>",self.zoomIn)
+        self.master.bind("<Control-minus>", self.zoomOut)
 
 
     def location(self, e):
@@ -341,7 +348,7 @@ class NotepadUI:
         vocab.add(word)
 
         # add word to probabilities
-        probs[str(textArea.tag_add("underline",start,end))]='1e-06'
+        probs[str(textArea.tag_add("underline",start,end))]=1e-06
         print('word ',textArea.get(start,end),'added to vocab and will not be underlined')
 
         with open('Model/vocab.pkl','wb') as f:
@@ -589,10 +596,10 @@ class NotepadUI:
         # Apply the "default" tag to all existing text in the Text widget
         textArea.tag_add("default", "1.0", tk.END)
 
-    def zoomIn(self):
+    def zoomIn(self,e):
         # Get the current font size of the Text widget
         current_font = textArea['font']
-        print(current_font)
+
         font_size = int(current_font.split(' ')[-1])
 
         # Calculate the new font size after applying the zoom factor
@@ -601,7 +608,7 @@ class NotepadUI:
         # Update the font size in the Text widget
         textArea.config(font=(current_font.split(' ')[0], new_font_size))
 
-    def zoomOut(self):
+    def zoomOut(self,e):
         current_font = textArea['font']
         print(current_font)
         font_size = int(current_font.split(' ')[-1])
@@ -611,6 +618,55 @@ class NotepadUI:
 
         # Update the font size in the Text widget
         textArea.config(font=(current_font.split(' ')[0], new_font_size))
+
+    def bugPopUp(self):
+        top = tk.Toplevel(root)
+        top.geometry("750x750")
+        top.title("Report a bug in the notepad")
+        photo = tk.PhotoImage(file='website/rsc/JT.png')
+        top.wm_iconphoto(False, photo)
+        Label(top, text="Enter your email", font=('Mistral 14')).place(x=50, y=10)
+        emailfield = tk.Text(top, height=2, width=40 )
+        Label(top, text="describe the bug", font=('Mistral 14')).place(x=50, y=80)
+        reportfield = tk.Text(top, height=20, width=40)
+
+        emailfield.pack()
+        reportfield.pack()
+        emailfield.place(x=200, y=10)
+        reportfield.place(x=200, y=80)
+        send = tk.Button(top,command=lambda :self.sendEmail(top,emailfield.get(1.0,tk.END),reportfield.get(1.0,tk.END)),text='Send Report',height=2,width=10)
+        send.pack()
+        send.place(x=345, y=475)
+
+    def sendEmail(self,top,email,report):
+        import smtplib
+        import ssl
+        sent_from= 'je.notepad.nlp@gmail.com'
+        gmail_password = 'zverinwdaamwoeim'
+
+        to = ['badreddinejalili@gmail.com', 'mohammed.tati21@gmail.com']
+        subject = 'Bug Report - Email: '  + email.strip()
+        print(subject)
+        body = report
+
+        email_text = """\
+           From: %s
+           To: %s
+           Subject: %s
+
+           %s
+           """ % (sent_from, ", ".join(to), subject, body)
+
+        try:
+            smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            smtp_server.ehlo()
+            smtp_server.login(sent_from, gmail_password)
+            smtp_server.sendmail(sent_from, to, email_text)
+            smtp_server.close()
+            print("Email sent successfully!")
+        except Exception as ex:
+            print("Something went wrong...", ex)
+        print(email.strip(),report.strip())
 
 
 if __name__ == "__main__":
