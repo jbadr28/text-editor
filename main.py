@@ -621,28 +621,39 @@ class NotepadUI:
 
     def bugPopUp(self):
         top = tk.Toplevel(root)
-        top.geometry("750x750")
-        top.title("Report a bug in the notepad")
+        top.geometry("400x500")
+        top.resizable(False, False)
+        top.configure(bg="#f2fef7")
+        top.title("Report a bug")
         photo = tk.PhotoImage(file='website/rsc/JT.png')
         top.wm_iconphoto(False, photo)
-        Label(top, text="Enter your email", font=('Mistral 14')).place(x=50, y=10)
-        emailfield = tk.Text(top, height=2, width=40)
-        Label(top, text="describe the bug", font=('Mistral 14')).place(x=50, y=80)
-        reportfield = tk.Text(top, height=20, width=40)
+        #border_color = tk.Frame(top, background="black")
+        Label(top, text="REPORT A BUG", font=('Mistral 18'), foreground="red", background="#f2fef7").pack(side=tk.TOP,
+                                                                                                          pady=30)
 
+        Label(top, text="Reporting bugs will help us provide a better", font=('Mistral 10'),
+              background="#f2fef7").pack()
+        Label(top, text="experience to the user!", font=('Mistral 10'), background="#f2fef7").pack()
+        Label(top, text="Thanks in advance.", font=('Mistral 10'), background="#f2fef7").pack(pady=10)
+        Label(top, text="--------------------------------------", font=('Mistral 10'), background="#f2fef7").pack(
+            pady=10)
+        Label(top, text="Enter your email", font=('Mistral 14'), foreground="#993F0C", background="#f2fef7").pack(
+            side=tk.TOP, pady=5)
+        emailfield = tk.Text(top, height=1, width=30, font=('Mistral 12'), borderwidth=3)
         emailfield.pack()
+        Label(top, text="", font=('Mistral 14'), background="#f2fef7").pack(side=tk.TOP, pady=5)
+        Label(top, text="describe the bug", font=('Mistral 14'), foreground="#993F0C", background="#f2fef7").pack(
+            side=tk.TOP, pady=5)
+        reportfield = tk.Text(top, height=5, width=30, font=('Mistral 12'), borderwidth=3)
         reportfield.pack()
-        emailfield.place(x=200, y=10)
-        reportfield.place(x=200, y=80)
+
         send = tk.Button(top,
                          command=lambda: self.sendEmail(top, emailfield.get(1.0, tk.END), reportfield.get(1.0, tk.END)),
-                         text='Send Report', height=2, width=10)
-        send.pack()
-        send.place(x=345, y=475)
+                         text='Send Report', height=2, width=10, background="#993F0C", foreground="white")
+        send.pack(pady=20)
 
     def sendEmail(self, top, email, report):
         import smtplib
-        import ssl
         sent_from = 'je.notepad.nlp@gmail.com'
         gmail_password = 'zverinwdaamwoeim'
 
