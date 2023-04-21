@@ -364,7 +364,6 @@ class NotepadUI:
             return str(w).strip().lower()
 
     def scaner(self, e):
-        textArea.tag_config("underline", underline=False)
         text = textArea.get(1.0, tk.END).strip().lower()
         if text != "":
             list_ = re.findall('\w+', text)
@@ -388,7 +387,6 @@ class NotepadUI:
     # Correct word
 
     def correct(self, e):
-        textArea.tag_config("underline", underline=False)
         w = self.last(e)
         start_index = '1.0'
         with open('Model/vocab.pkl','rb') as f :
