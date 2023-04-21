@@ -96,6 +96,7 @@ class NotepadUI:
         # Help Menu
         helpMenu = tk.Menu(menuBar, tearoff=0, bg="#f2fef7")
         helpMenu.add_command(label="Report a bug", command=self.bugPopUp)
+        helpMenu.entryconfig("Report a bug", state="disabled")
         helpMenu.add_command(label="About Notepad AI", command=self.about)
         menuBar.add_cascade(label="Help", menu=helpMenu)
 
@@ -635,26 +636,26 @@ class NotepadUI:
         top.resizable(False, False)
         top.configure(bg="#f2fef7")
         top.title("Report a bug")
-        photo = tk.PhotoImage(file='website/rsc/JT.png')
+        photo = tk.PhotoImage(file=resource_path('Model/JT.png'))
         top.wm_iconphoto(False, photo)
         #border_color = tk.Frame(top, background="black")
-        Label(top, text="REPORT A BUG", font=('Mistral 18'), foreground="red", background="#f2fef7").pack(side=tk.TOP,
+        Label(top, text="REPORT A BUG", font=("Lucida Console", 18), foreground="red", background="#f2fef7").pack(side=tk.TOP,
                                                                                                           pady=30)
 
-        Label(top, text="Reporting bugs will help us provide a better", font=('Mistral 10'),
+        Label(top, text="Reporting bugs will help us provide a better", font=("Lucida Console", 10),
               background="#f2fef7").pack()
-        Label(top, text="experience to the user!", font=('Mistral 10'), background="#f2fef7").pack()
-        Label(top, text="Thanks in advance.", font=('Mistral 10'), background="#f2fef7").pack(pady=10)
-        Label(top, text="--------------------------------------", font=('Mistral 10'), background="#f2fef7").pack(
+        Label(top, text="experience to the user!", font=("Lucida Console", 10), background="#f2fef7").pack()
+        Label(top, text="Thanks in advance.", font=("Lucida Console", 10), background="#f2fef7").pack(pady=10)
+        Label(top, text="--------------------------------------", font=("Lucida Console", 10), background="#f2fef7").pack(
             pady=10)
-        Label(top, text="Enter your email", font=('Mistral 14'), foreground="#993F0C", background="#f2fef7").pack(
+        Label(top, text="Enter your email", font=("Lucida Console", 14), foreground="#993F0C", background="#f2fef7").pack(
             side=tk.TOP, pady=5)
-        emailfield = tk.Text(top, height=1, width=30, font=('Mistral 12'), borderwidth=3)
+        emailfield = tk.Text(top, height=1, width=30, font=("Lucida Console", 12), borderwidth=3)
         emailfield.pack()
-        Label(top, text="", font=('Mistral 14'), background="#f2fef7").pack(side=tk.TOP, pady=5)
-        Label(top, text="describe the bug", font=('Mistral 14'), foreground="#993F0C", background="#f2fef7").pack(
+        Label(top, text="", font=("Lucida Console", 14), background="#f2fef7").pack(side=tk.TOP, pady=5)
+        Label(top, text="describe the bug", font=("Lucida Console", 14), foreground="#993F0C", background="#f2fef7").pack(
             side=tk.TOP, pady=5)
-        reportfield = tk.Text(top, height=5, width=30, font=('Mistral 12'), borderwidth=3)
+        reportfield = tk.Text(top, height=5, width=30, font=("Lucida Console", 12), borderwidth=3)
         reportfield.pack()
 
         send = tk.Button(top,
@@ -689,10 +690,10 @@ class NotepadUI:
             report_popup = tk.Toplevel(top)
             report_popup.geometry("450x400")
             report_popup.title("Report a bug in the notepad")
-            photo = tk.PhotoImage(file='website/rsc/JT.png', master=report_popup)
+            photo = tk.PhotoImage(file=resource_path('Model/JT.png'), master=report_popup)
             report_popup.wm_iconphoto(False, photo)
             Label(report_popup, text="report is sent,\n you'll recieve our feedback very soon",
-                  font=('Mistral 14')).place(x=50, y=10)
+                  font=("Lucida Console", 14)).place(x=50, y=10)
             dest = tk.Button(report_popup, command=lambda: top.destroy(), text='Got it', height=2, width=10)
             dest.pack()
             dest.place(x=150, y=80)
