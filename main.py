@@ -95,7 +95,7 @@ class NotepadUI:
 
         # Help Menu
         helpMenu = tk.Menu(menuBar, tearoff=0, bg="#f2fef7")
-        helpMenu.add_command(label="Report a bug", command=lambda: self.bugPopUp())
+        helpMenu.add_command(label="Report a bug", command=self.bugPopUp)
         helpMenu.add_command(label="About Notepad AI", command=self.about)
         menuBar.add_cascade(label="Help", menu=helpMenu)
 
