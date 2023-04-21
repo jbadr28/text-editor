@@ -4,14 +4,10 @@ import smtplib
 import ssl
 import tkinter as tk
 import webbrowser
-from tkinter import messagebox, filedialog , colorchooser , ttk
+from tkinter import messagebox, filedialog, colorchooser, ttk
 from tkinter.ttk import Label
 
-
 from Model.edit import *
-
-
-
 
 
 class NotepadUI:
@@ -20,9 +16,9 @@ class NotepadUI:
         self.master.title("Untitled   - AI Notepad")
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
-        self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
+        self.master.protocol("WM_DELETE_WINDOW", lambda: self.quit(False))
 
-        #photo = tk.PhotoImage(file='website/rsc/JT.png')
+        # photo = tk.PhotoImage(file='website/rsc/JT.png')
         photo = tk.PhotoImage(file="website/rsc/JT.png")
         self.master.iconphoto(False, photo)
 
@@ -32,7 +28,7 @@ class NotepadUI:
         global selected
         selected = False
 
-        global font 
+        global font
         font = ["Lucida Console", 12]
 
         # Set up the UI elements
@@ -72,12 +68,9 @@ class NotepadUI:
             False), accelerator="Ctrl+A")
         editMenu.add_separator()
 
-
-
-        editMenu.add_command(label="Clear the page", command=lambda : self.clear(False))
-        editMenu.add_command(label="Background color", command=lambda : self.change_back_ground_color())
+        editMenu.add_command(label="Clear the page", command=lambda: self.clear(False))
+        editMenu.add_command(label="Background color", command=lambda: self.change_back_ground_color())
         editMenu.add_command(label="Font color", command=lambda: self.change_font_color())
-
 
         menuBar.add_cascade(label="Edit", menu=editMenu)
 
@@ -86,11 +79,12 @@ class NotepadUI:
         zoomMenu = tk.Menu(viewMenu, tearoff=0, bg="#f2fef7")
         viewMenu.add_cascade(label="Zoom", menu=zoomMenu)
 
-        zoomMenu.add_command(label="Zoom in", command=lambda : self.zoomIn(False))
-        zoomMenu.add_command(label="Zoom out", command=lambda : self.zoomOut(False))
+        zoomMenu.add_command(label="Zoom in", command=lambda: self.zoomIn(False))
+        zoomMenu.add_command(label="Zoom out", command=lambda: self.zoomOut(False))
 
         viewMenu.add_separator()
-        viewMenu.add_command(label="Status bar", command="", accelerator="Comming Soon", activebackground="red", activeforeground="white")
+        viewMenu.add_command(label="Status bar", command="", accelerator="Comming Soon", activebackground="red",
+                             activeforeground="white")
 
         menuBar.add_cascade(label="View", menu=viewMenu)
 
@@ -99,7 +93,7 @@ class NotepadUI:
         helpMenu.add_command(label="Report a bug", command=lambda: self.bugPopUp())
         helpMenu.add_command(label="About Notepad AI", command=self.about)
         menuBar.add_cascade(label="Help", menu=helpMenu)
-        
+
         # Scrollbar
         scrollbar = tk.Scrollbar(self.master, background="#f2fef7")
         scrollbar.pack(side="right", fill="y")
@@ -143,22 +137,23 @@ class NotepadUI:
 
         # Right click Menu
         rcMenu = tk.Menu(textArea, tearoff=0, bg="#f2fef7")
+
         def menu_commands(e):
-            if e == 1:    
+            if e == 1:
                 rcMenu.add_command(label="Add to dictionary", command=lambda: self.add_to_Dictionary(False))
                 rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
                 rcMenu.add_separator()
-            if e == 2:    
+            if e == 2:
                 rcMenu.add_command(label="Search Google", command=lambda: self.searsh(False))
                 rcMenu.add_separator()
             rcMenu.add_command(label="Scan for errors", command=lambda: self.scaner(False), accelerator="Alt+C")
             rcMenu.add_separator()
             rcMenu.add_command(label="Cut", command=lambda: self.cut(
-                        False), accelerator="Ctrl+X")
+                False), accelerator="Ctrl+X")
             rcMenu.add_command(label="Copy", command=lambda: self.copy(
-                        False), accelerator="Ctrl+C")
+                False), accelerator="Ctrl+C")
             rcMenu.add_command(label="Paste", command=lambda: self.paste(
-                        False), accelerator="Ctrl+V")
+                False), accelerator="Ctrl+V")
             rcMenu.add_separator()
             rcMenu.add_command(label="Exit", command=lambda: self.quit(False))
 
@@ -193,7 +188,7 @@ class NotepadUI:
 
                 # END
                 word_len = len(textArea.get(start, tk.END).split(" ")[0])
-                end = str(row) + "." + str(col + word_len+1)
+                end = str(row) + "." + str(col + word_len + 1)
 
                 textArea.tag_add(tk.SEL, start, end)
 
@@ -246,24 +241,24 @@ class NotepadUI:
 
                         for i in range(len(sorted_suggestion)):
                             if i == 0:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg1,)
-                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg1, )
+                                # accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 1:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg2,)
-                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg2, )
+                                # accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 2:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg3,)
-                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg3, )
+                                # accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 3:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg4,)
-                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg4, )
+                                # accelerator='med(' + str(sorted_values[i]) + ')')
 
                             if i == 4:
-                                rcMenu.add_command(label=sorted_keys[i], command=sugg5,)
-                                                   #accelerator='med(' + str(sorted_values[i]) + ')')
+                                rcMenu.add_command(label=sorted_keys[i], command=sugg5, )
+                                # accelerator='med(' + str(sorted_values[i]) + ')')
                     rcMenu.add_separator()
                     menu_commands(1)
                 else:
@@ -271,7 +266,7 @@ class NotepadUI:
             else:
                 menu_commands(0)
 
-        textArea.bind("<Button-3>",call_rcMenu)
+        textArea.bind("<Button-3>", call_rcMenu)
 
         # Edit binding
         self.master.bind("<Control-Key-x>", self.cut)
@@ -295,10 +290,8 @@ class NotepadUI:
         self.master.bind("<Alt-Key-c>", self.scaner)
         self.master.bind("<Alt-Key-C>", self.scaner)
 
-        self.master.bind("<Control-plus>",self.zoomIn)
+        self.master.bind("<Control-plus>", self.zoomIn)
         self.master.bind("<Control-minus>", self.zoomOut)
-
-
 
     def location(self, e):
         location = textArea.index('current')
@@ -320,10 +313,10 @@ class NotepadUI:
 
         # END
         word_len = len(textArea.get(start, tk.END).split(" ")[0])
-        end = str(row) + "." + str(col + word_len+1)
+        end = str(row) + "." + str(col + word_len + 1)
         return start, end
-    
-    def searsh(self,e):
+
+    def searsh(self, e):
         start, end = self.location(e)
         # remove underline
         textArea.tag_config("underline", underline=False)
@@ -331,28 +324,28 @@ class NotepadUI:
 
         # add word to vocabulary
         word = textArea.get(start, end).lower()
-        url = 'https://www.google.com/search?q='+word
+        url = 'https://www.google.com/search?q=' + word
         webbrowser.open_new_tab(url)
 
     def add_to_Dictionary(self, e):
         textArea.tag_config("underline", underline=False)
         start, end = self.location(e)
         # remove underline
-        
-        textArea.tag_add("underline",start,end)
+
+        textArea.tag_add("underline", start, end)
         textArea.tag_config("underline", underline=False)
 
         # add word to vocabulary
-        word = textArea.get(start,end).lower()
+        word = textArea.get(start, end).lower()
         print(word)
         vocab.add(word)
 
         # add word to probabilities
-        probs[str(textArea.tag_add("underline",start,end))]=1e-06
-        print('word ',textArea.get(start,end),'added to vocab and will not be underlined')
+        probs[str(textArea.tag_add("underline", start, end))] = 1e-06
+        print('word ', textArea.get(start, end), 'added to vocab and will not be underlined')
 
-        with open('Model/vocab.pkl','wb') as f:
-            pickle.dump(vocab,f)
+        with open('Model/vocab.pkl', 'wb') as f:
+            pickle.dump(vocab, f)
             f.close()
 
         with open('Model/probs.pkl', 'wb') as s:
@@ -363,11 +356,11 @@ class NotepadUI:
 
     def last(self, e):
         text = textArea.get(1.0, tk.END).strip().lower()
-        print("letter"+text+"fucking")
-        #w = text.split(" ")[-1]
+        print("letter" + text + "fucking")
+        # w = text.split(" ")[-1]
         if text != "":
             lis = re.findall('\w+', text)
-            print('list ',lis)
+            print('list ', lis)
             w = lis[-1]
 
             print(w)
@@ -380,7 +373,7 @@ class NotepadUI:
             list_ = re.findall('\w+', text)
             for w in list_:
                 start_index = '1.0'
-                with open('Model/vocab.pkl','rb') as f :
+                with open('Model/vocab.pkl', 'rb') as f:
                     updated_vocab = pickle.load(f)
                 # we loop through the entire textarea to get all occurences of w not only first one
                 while True:
@@ -391,17 +384,16 @@ class NotepadUI:
                     if w not in updated_vocab:
                         textArea.tag_add("underline", pos_start, pos_end)
                         textArea.tag_config("underline", underline=True, underlinefg="red")
-                        
+
                     start_index = pos_end
 
-    
     # Correct word
 
     def correct(self, e):
         textArea.tag_config("underline", underline=False)
         w = self.last(e)
         start_index = '1.0'
-        with open('Model/vocab.pkl','rb') as f :
+        with open('Model/vocab.pkl', 'rb') as f:
             updated_vocab = pickle.load(f)
         # we loop through the entire textarea to get all occurences of w not only first one
         while True:
@@ -414,11 +406,10 @@ class NotepadUI:
                 textArea.tag_add("underline", pos_start, pos_end)
             start_index = pos_end
 
-
     # Quit
 
     def quit(self, e):
-        answer = messagebox.askyesno(title= "Exit",message="Are you sure you want to quit?")
+        answer = messagebox.askyesno(title="Exit", message="Are you sure you want to quit?")
         if answer:
             self.master.quit()
 
@@ -477,8 +468,6 @@ class NotepadUI:
     def new_window(self, e):
         new_wind = tk.Toplevel(root)
         NotepadUI(new_wind)
-
-
 
     # Save As File
 
@@ -573,15 +562,14 @@ class NotepadUI:
             textArea.insert(position, selected)
             self.master.clipboard_clear()
             self.master.clipboard_append(selected)
-    
+
     def zoom(self, e):
         global font
         if e:
-            font[1] = font[1] + 2 
+            font[1] = font[1] + 2
         else:
-            font[1] = font[1] - 2 
+            font[1] = font[1] - 2
         textArea.configure(font=font)
-
 
     # About Message function
     def about(self):
@@ -590,7 +578,7 @@ class NotepadUI:
             message="This an intelligent notepad that will auto-correct & auto-complete your notes!\n Have a great day!")
 
     def clear(self, e):
-        textArea.delete(1.0,tk.END)
+        textArea.delete(1.0, tk.END)
 
     def change_back_ground_color(self):
         color = colorchooser.askcolor()[1]  # Open color dialog and get the chosen color
@@ -609,19 +597,19 @@ class NotepadUI:
         # Apply the "default" tag to all existing text in the Text widget
         textArea.tag_add("default", "1.0", tk.END)
 
-    def zoomIn(self,e):
+    def zoomIn(self, e):
         # Get the current font size of the Text widget
         current_font = textArea['font']
 
         font_size = int(current_font.split(' ')[-1])
 
         # Calculate the new font size after applying the zoom factor
-        new_font_size = int(font_size +2)
+        new_font_size = int(font_size + 2)
 
         # Update the font size in the Text widget
         textArea.config(font=(current_font.split(' ')[0], new_font_size))
 
-    def zoomOut(self,e):
+    def zoomOut(self, e):
         current_font = textArea['font']
         print(current_font)
         font_size = int(current_font.split(' ')[-1])
@@ -639,7 +627,7 @@ class NotepadUI:
         photo = tk.PhotoImage(file='website/rsc/JT.png')
         top.wm_iconphoto(False, photo)
         Label(top, text="Enter your email", font=('Mistral 14')).place(x=50, y=10)
-        emailfield = tk.Text(top, height=2, width=40 )
+        emailfield = tk.Text(top, height=2, width=40)
         Label(top, text="describe the bug", font=('Mistral 14')).place(x=50, y=80)
         reportfield = tk.Text(top, height=20, width=40)
 
@@ -647,18 +635,20 @@ class NotepadUI:
         reportfield.pack()
         emailfield.place(x=200, y=10)
         reportfield.place(x=200, y=80)
-        send = tk.Button(top,command=lambda :self.sendEmail(top,emailfield.get(1.0,tk.END),reportfield.get(1.0,tk.END)),text='Send Report',height=2,width=10)
+        send = tk.Button(top,
+                         command=lambda: self.sendEmail(top, emailfield.get(1.0, tk.END), reportfield.get(1.0, tk.END)),
+                         text='Send Report', height=2, width=10)
         send.pack()
         send.place(x=345, y=475)
 
-    def sendEmail(self,top,email,report):
+    def sendEmail(self, top, email, report):
         import smtplib
         import ssl
-        sent_from= 'je.notepad.nlp@gmail.com'
+        sent_from = 'je.notepad.nlp@gmail.com'
         gmail_password = 'zverinwdaamwoeim'
 
         to = ['badreddinejalili@gmail.com', 'mohammed.tati21@gmail.com']
-        subject = 'Bug Report - Email: '  + email.strip()
+        subject = 'Bug Report - Email: ' + email.strip()
         print(subject)
         body = report
 
@@ -681,14 +671,15 @@ class NotepadUI:
             report_popup.title("Report a bug in the notepad")
             photo = tk.PhotoImage(file='website/rsc/JT.png')
             report_popup.wm_iconphoto(False, photo)
-            Label(report_popup, text="report is sent,\n you'll recieve our feedback very soon", font=('Mistral 14')).place(x=50, y=10)
-            dest = tk.Button(report_popup, command=lambda :top.destroy(), text='Got it', height=2, width=10)
+            Label(report_popup, text="report is sent,\n you'll recieve our feedback very soon",
+                  font=('Mistral 14')).place(x=50, y=10)
+            dest = tk.Button(report_popup, command=lambda: top.destroy(), text='Got it', height=2, width=10)
             dest.pack()
             dest.place(x=150, y=80)
 
         except Exception as ex:
             print("Something went wrong...", ex)
-        print(email.strip(),report.strip())
+        print(email.strip(), report.strip())
 
 
 if __name__ == "__main__":
