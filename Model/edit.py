@@ -1,12 +1,26 @@
 import pickle
 import re
 import numpy as np
-
-with open( 'Model/probs.pkl', 'rb') as f:
-    probs = pickle.load(f)
-with open('Model/vocab.pkl', 'rb') as f:
-    vocab = pickle.load(f)
-
+# import sys
+# import os
+#
+#
+# def resource_path(relative_path):
+#     """ Get absolute path to resource, works for dev and for PyInstaller """
+#     try:
+#         # PyInstaller creates a temp folder and stores path in _MEIPASS
+#         base_path = sys._MEIPASS
+#     except Exception:
+#         base_path = os.path.abspath(".")
+#
+#     return os.path.join(base_path, relative_path)
+#
+#
+# with open(resource_path('Model/probs.pkl'), 'rb') as f:
+#     probs = pickle.load(f)
+# with open(resource_path('Model/vocab.pkl'), 'rb') as f:
+#     vocab = pickle.load(f)
+#
 
 def delete_letter(word, verbose=False):
     '''
@@ -166,18 +180,20 @@ def get_corrections(word, probs, vocab, n=2, verbose=False):
         (word in vocab and word) or edit_one_letter(word).intersection(vocab) or edit_two_letters(word).intersection(
             vocab))
     n_best = [[s, probs[s]] for s in list(reversed(suggestions))]
-    #n_best = list(reversed(suggestions))[:-5]
+    # n_best = list(reversed(suggestions))[:-5]
     ### END CODE HERE ###
 
     if verbose: print("suggestions = ", suggestions)
 
     return n_best
 
+
 def detect_miss_spelled(word):
-    print("miss spelled word is : ",word)
+    print("miss spelled word is : ", word)
     tmp_corrections = get_corrections(word, probs, vocab, 2, verbose=True)
     for i, word_prob in enumerate(tmp_corrections):
         print(f"word {i}: {word_prob[0]}, probability {word_prob[1]:.6f}")
+
 
 def min_edit_distance(source, target, ins_cost=1, del_cost=1, rep_cost=2):
     '''
@@ -230,4 +246,4 @@ def min_edit_distance(source, target, ins_cost=1, del_cost=1, rep_cost=2):
     med = D[m, n]
 
     ### END CODE HERE ###
-    return  med
+    return med

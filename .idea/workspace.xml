@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c1b3610-46b9-4a35-9d30-9756578558a0" name="Changes" comment="new window feature added">
+    <list default="true" id="2c1b3610-46b9-4a35-9d30-9756578558a0" name="Changes" comment="first version &quot;finger crossed&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/edit.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/edit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/vocab.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/Model/vocab.pkl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +40,7 @@
     &quot;last_opened_file_path&quot;: &quot;C:/Users/lenovo/PycharmProjects/AINotePad&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.main (1)">
+  <component name="RunManager" selected="Python.main">
     <configuration name="edit" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AI NotePad" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -60,7 +62,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AI NotePad" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -88,12 +90,13 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/UI" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="SDK_HOME" value="C:\Python311\python.exe" />
+      <option name="SDK_NAME" value="Python 3.11" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/UI/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -102,9 +105,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.edit" />
+      <item itemvalue="Python.main" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.edit" />
         <item itemvalue="Python.main" />
       </list>
@@ -280,7 +287,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682031326064</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="scanner updated">
+      <created>1682042169806</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1682042169806</updated>
+    </task>
+    <task id="LOCAL-00025" summary="first version &quot;finger crossed&quot;">
+      <created>1682044008994</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1682044008994</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -328,6 +349,8 @@
     <MESSAGE value="report a bug" />
     <MESSAGE value="report-bug pop auto-destroy" />
     <MESSAGE value="new window feature added" />
-    <option name="LAST_COMMIT_MESSAGE" value="new window feature added" />
+    <MESSAGE value="scanner updated" />
+    <MESSAGE value="first version &quot;finger crossed&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="first version &quot;finger crossed&quot;" />
   </component>
 </project>

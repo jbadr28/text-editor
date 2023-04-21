@@ -1,20 +1,30 @@
 import pickle
 import re
+import sys
+import os
 import tkinter as tk
 import webbrowser
 from tkinter import messagebox, filedialog, colorchooser
 from tkinter.ttk import Label
 from Model.edit import *
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
+    return os.path.join(base_path, relative_path)
 class NotepadUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Untitled   - AI Notepad")
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
-        # self.master.protocol("WM_DELETE_WINDOW",lambda: self.quit(False))
-        photo = tk.PhotoImage(file='website/rsc/JT.png', master=self.master)
+        file = resource_path('Model/JT.png')
+        photo = tk.PhotoImage(file=file,master=self.master)
         self.master.iconphoto(False, photo)
 
         global current_opened_file
@@ -189,10 +199,10 @@ class NotepadUI:
                 textArea.tag_add(tk.SEL, start, end)
 
                 word = textArea.get(start, end)
-                with open('Model/vocab.pkl', 'rb') as f:
+                with open(resource_path('Model/vocab.pkl'), 'rb') as f:
                     updated_vocab = pickle.load(f)
                     f.close()
-                with open('Model/probs.pkl', 'rb') as f:
+                with open(resource_path('Model/probs.pkl'), 'rb') as f:
                     updated_probs = pickle.load(f)
                     f.close()
                 if word not in updated_vocab:
@@ -338,11 +348,11 @@ class NotepadUI:
         probs[str(textArea.tag_add("underline", start, end))] = 1e-06
         print('word ', textArea.get(start, end), 'added to vocab and will not be underlined')
 
-        with open('Model/vocab.pkl', 'wb') as f:
+        with open(resource_path('Model/vocab.pkl'), 'wb') as f:
             pickle.dump(vocab, f)
             f.close()
 
-        with open('Model/probs.pkl', 'wb') as s:
+        with open(resource_path('Model/probs.pkl'), 'wb') as s:
             pickle.dump(probs, s)
             s.close()
 
@@ -369,7 +379,7 @@ class NotepadUI:
             list_ = re.findall('\w+', text)
             for w in list_:
                 start_index = '1.0'
-                with open('Model/vocab.pkl', 'rb') as f:
+                with open(resource_path('Model/vocab.pkl'), 'rb') as f:
                     updated_vocab = pickle.load(f)
                 # we loop through the entire textarea to get all occurences of w not only first one
                 while True:
@@ -389,7 +399,7 @@ class NotepadUI:
     def correct(self, e):
         w = self.last(e)
         start_index = '1.0'
-        with open('Model/vocab.pkl', 'rb') as f:
+        with open(resource_path('Model/vocab.pkl'), 'rb') as f:
             updated_vocab = pickle.load(f)
         # we loop through the entire textarea to get all occurences of w not only first one
         while True:
