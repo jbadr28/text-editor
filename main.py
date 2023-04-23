@@ -292,7 +292,7 @@ class NotepadUI:
         self.master.bind("<Control-Key-O>", self.open_file)
         self.master.bind("<Control-Key-q>", self.quit)
         self.master.bind("<Control-Key-Q>", self.quit)
-        self.master.bind("<Control-N>", self.new_window)
+        #self.master.bind("<Control-N>", self.new_window)
         self.master.bind("<Control-Key-a>", self.select_all)
         self.master.bind("<Control-Key-A>", self.select_all)
         self.master.bind("<space>", self.correct)
