@@ -1,4 +1,24 @@
+import pickle
+import re
 import numpy as np
+import sys
+import os
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS2
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+with open(resource_path('Data\\probs.pkl'), 'rb') as f:
+    probs = pickle.load(f)
+with open(resource_path('Data\\vocab.pkl'), 'rb') as f:
+    vocab = pickle.load(f)
 
 
 def delete_letter(word, verbose=False):
