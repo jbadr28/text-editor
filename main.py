@@ -12,7 +12,7 @@ def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
+        base_path = sys._MEIPASS2
     except Exception:
         base_path = os.path.abspath(".")
 
@@ -23,7 +23,7 @@ class NotepadUI:
         self.master.title("Untitled   - AI Notepad")
         self.master.geometry("960x540")
         self.master.configure(bg="#f2fef7")
-        file = resource_path('Model\\JT.png')
+        file = resource_path('Data\\JT.png')
         photo = tk.PhotoImage(file=file,master=self.master)
         self.master.iconphoto(False, photo)
 
@@ -203,10 +203,10 @@ class NotepadUI:
                 textArea.tag_add(tk.SEL, start, end)
 
                 word = textArea.get(start, end)
-                with open(resource_path('Model\\vocab.pkl'), 'rb') as f:
+                with open(resource_path('Data\\vocab.pkl'), 'rb') as f:
                     updated_vocab = pickle.load(f)
                     f.close()
-                with open(resource_path('Model\\probs.pkl'), 'rb') as f:
+                with open(resource_path('Data\\probs.pkl'), 'rb') as f:
                     updated_probs = pickle.load(f)
                     f.close()
                 if word not in updated_vocab:
@@ -339,7 +339,7 @@ class NotepadUI:
 
         # add word to vocabulary
         word = textArea.get(start, end).lower()
-        url = 'https://www.google.com/search?q=' + word
+        url = "https://www.google.com/search?q=" + word
         webbrowser.open_new_tab(url)
 
     def add_to_Dictionary(self, e):
@@ -357,11 +357,11 @@ class NotepadUI:
         probs[str(textArea.tag_add("underline", start, end))] = 1e-06
         print('word ', textArea.get(start, end), 'added to vocab and will not be underlined')
 
-        with open(resource_path('Model\\vocab.pkl'), 'wb') as f:
+        with open(resource_path('Data\\vocab.pkl'), 'wb') as f:
             pickle.dump(vocab, f)
             f.close()
 
-        with open(resource_path('Model\\probs.pkl'), 'wb') as s:
+        with open(resource_path('Data\\probs.pkl'), 'wb') as s:
             pickle.dump(probs, s)
             s.close()
 
@@ -388,7 +388,7 @@ class NotepadUI:
             list_ = re.findall('\w+', text)
             for w in list_:
                 start_index = '1.0'
-                with open(resource_path('Model\\vocab.pkl'), 'rb') as f:
+                with open(resource_path('Data\\vocab.pkl'), 'rb') as f:
                     updated_vocab = pickle.load(f)
                 # we loop through the entire textarea to get all occurences of w not only first one
                 while True:
@@ -408,7 +408,7 @@ class NotepadUI:
     def correct(self, e):
         w = self.last(e)
         start_index = '1.0'
-        with open(resource_path('Model\\vocab.pkl'), 'rb') as f:
+        with open(resource_path('Data\\vocab.pkl'), 'rb') as f:
             updated_vocab = pickle.load(f)
         # we loop through the entire textarea to get all occurences of w not only first one
         while True:
@@ -644,7 +644,7 @@ class NotepadUI:
         top.resizable(False, False)
         top.configure(bg="#f2fef7")
         top.title("Report a bug")
-        photo = tk.PhotoImage(file=resource_path('Model\\JT.png'))
+        photo = tk.PhotoImage(file=resource_path('Data\\JT.png'))
         top.wm_iconphoto(False, photo)
         #border_color = tk.Frame(top, background="black")
         Label(top, text="REPORT A BUG", font=("Lucida Console", 18), foreground="red", background="#f2fef7").pack(side=tk.TOP,
@@ -698,7 +698,7 @@ class NotepadUI:
             report_popup = tk.Toplevel(top)
             report_popup.geometry("450x400")
             report_popup.title("Report a bug in the notepad")
-            photo = tk.PhotoImage(file=resource_path('Model\\JT.png'), master=report_popup)
+            photo = tk.PhotoImage(file=resource_path('Data\\JT.png'), master=report_popup)
             report_popup.wm_iconphoto(False, photo)
             Label(report_popup, text="report is sent,\n you'll recieve our feedback very soon",
                   font=("Lucida Console", 14)).place(x=50, y=10)
