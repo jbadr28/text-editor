@@ -16,7 +16,7 @@ So whether you're a busy professional, a student, or just someone who loves to w
 ### JT NotePad website
 You can Donwload the app in our website, which runs on `OS WINDOWS x64 Bits`, Space needed for the V1.0.6 is `29 MB`.
 
-- Website: [JT NotePad](https://jbadr28.github.io/JT-NotePad/){:target="_blank" rel="noopener"}
+- Website: [JT NotePad](https://jbadr28.github.io/JT-NotePad/){:target="_blank"}
 ## Repository Tree
 ``` bash
 .
