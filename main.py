@@ -47,6 +47,7 @@ class NotepadUI:
             False), accelerator="Ctrl+N")
         fileMenu.add_command(label="New Window    ", command=lambda: self.new_window(
             False), accelerator="Ctrl+Shift+N")
+        fileMenu.entryconfig("New Window    ", state="disabled")
         fileMenu.add_separator()
         fileMenu.add_command(label="Open", command=lambda: self.open_file(
             False), accelerator="Ctrl+O")
@@ -84,13 +85,12 @@ class NotepadUI:
         zoomMenu = tk.Menu(viewMenu, tearoff=0, bg="#f2fef7")
         viewMenu.add_cascade(label="Zoom", menu=zoomMenu)
 
-        zoomMenu.add_command(label="Zoom in", command=lambda: self.zoomIn(False))
-        zoomMenu.add_command(label="Zoom out", command=lambda: self.zoomOut(False))
+        zoomMenu.add_command(label="Zoom in          ", command=lambda: self.zoomIn(False), accelerator="Ctrl++")
+        zoomMenu.add_command(label="Zoom out", command=lambda: self.zoomOut(False), accelerator="Ctrl--")
 
         viewMenu.add_separator()
-        viewMenu.add_command(label="Status bar", command="", accelerator="Comming Soon", activebackground="red",
-                             activeforeground="white")
-
+        viewMenu.add_command(label="Status bar", command="", accelerator="(Comming Soon)")
+        viewMenu.entryconfig("Status bar", state="disabled")
         menuBar.add_cascade(label="View", menu=viewMenu)
 
         # Help Menu
@@ -195,7 +195,10 @@ class NotepadUI:
 
                 # END
                 word_len = len(textArea.get(start, tk.END).split(" ")[0])
-                end = str(row) + "." + str(col + word_len + 1)
+                if col == 0:
+                    end = str(row) + "." + str(col + word_len)
+                else:
+                    end = str(row) + "." + str(col + word_len + 1)
 
                 textArea.tag_add(tk.SEL, start, end)
 
@@ -320,7 +323,12 @@ class NotepadUI:
 
         # END
         word_len = len(textArea.get(start, tk.END).split(" ")[0])
-        end = str(row) + "." + str(col + word_len + 1)
+        if col == 0:
+            end = str(row) + "." + str(col + word_len)
+        else:
+            end = str(row) + "." + str(col + word_len + 1)
+        
+        
         return start, end
 
     def searsh(self, e):
