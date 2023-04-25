@@ -674,7 +674,7 @@ class NotepadUI:
     def sendEmail(self, top, email, report):
         import smtplib
         sent_from = 'je.notepad.nlp@gmail.com'
-        gmail_password = 'zverinwdaamwoeim'
+        gmail_password = 'generated app password'
 
         to = ['badreddinejalili@gmail.com', 'mohammed.tati21@gmail.com']
         subject = 'Bug Report - Email: ' + email.strip()
